@@ -15,7 +15,7 @@ This library helps implement expandable behavior as prescribed by Material Desig
 Flutter material library, is designed to work only within `ExpansionPanelList` and cannot be used
 for making other widgets, for example, expandable Card widgets.
 
-![animated image](https://github.com/aryzhov/flutter-expandable/blob/master/docs/expandable_demo_small.gif?raw=true)     
+![animated image](https://github.com/aryzhov/flutter-expandable/blob/master/doc/expandable_demo_small.gif?raw=true)     
 
 ## Usage
 
