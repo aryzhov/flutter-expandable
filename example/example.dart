@@ -70,20 +70,25 @@ class Card1 extends StatelessWidget {
                 ),
               ),
             ),
-            ExpandableHeader(
-              child: Padding(
-                padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 0.0),
+            ExpandablePanel(
+              tapHeaderToExpand: true,
+              header: Padding(
+                padding: EdgeInsets.only(top: 10.0, left: 10),
                 child: Text("Lorem ipsum",
                   style: Theme.of(context).textTheme.body2,
-                ),
+                )
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
-              child: Expandable(
-                collapsed: Text(loremIpsum, softWrap: false, overflow: TextOverflow.ellipsis,),
-                expanded: Text(loremIpsum, softWrap: true, overflow: TextOverflow.fade,),
-              ),
+              collapsed: Text(loremIpsum, softWrap: false, overflow: TextOverflow.ellipsis,),
+              expanded: Text(loremIpsum, softWrap: true, overflow: TextOverflow.fade,),
+              builder: (_, collapsed, expanded) {
+                return Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+                  child: Expandable(
+                    collapsed: collapsed,
+                    expanded: expanded,
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -110,7 +115,7 @@ class Card2 extends StatelessWidget {
       );
     }
 
-    buildCollapsedHeader() {
+    buildCollapsed1() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -129,15 +134,15 @@ class Card2 extends StatelessWidget {
       );
     }
 
-    buildCollapsedPictures() {
+    buildCollapsed2() {
       return buildImg('images/IMG_3897.JPG', 150.0);
     }
 
-    buildCollapsedDescription() {
+    buildCollapsed3() {
       return Container();
     }
 
-    buildExpandedHeader() {
+    buildExpanded1() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -159,7 +164,7 @@ class Card2 extends StatelessWidget {
       );
     }
 
-    buildExpandedPictures() {
+    buildExpanded2() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -187,7 +192,7 @@ class Card2 extends StatelessWidget {
       );
     }
 
-    buildExpandedDescription() {
+    buildExpanded3() {
       return Padding(
         padding: EdgeInsets.all(10.0),
         child: Column(
@@ -208,16 +213,16 @@ class Card2 extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expandable(
-              collapsed: buildCollapsedHeader(),
-              expanded: buildExpandedHeader(),
+              collapsed: buildCollapsed1(),
+              expanded: buildExpanded1(),
             ),
             Expandable(
-              collapsed: buildCollapsedPictures(),
-              expanded: buildExpandedPictures(),
+              collapsed: buildCollapsed2(),
+              expanded: buildExpanded2(),
             ),
             Expandable(
-              collapsed: buildCollapsedDescription(),
-              expanded: buildExpandedDescription(),
+              collapsed: buildCollapsed3(),
+              expanded: buildExpanded3(),
             ),
             Divider(height: 0.0,),
             Row(
