@@ -104,9 +104,7 @@ class ExpandablePanel extends StatelessWidget {
   }
 
   ExpandablePanel({
-    @required
     this.collapsed,
-    @required
     this.header,
     this.expanded,
     this.initialExpanded = false,
@@ -125,10 +123,7 @@ class ExpandablePanel extends StatelessWidget {
       } else {
         final rowChildren = <Widget>[
           Expanded(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: 45.0),
-              child: child,
-            ),
+            child: child,
           ),
           Align(
             alignment: Alignment.topCenter,
@@ -144,12 +139,16 @@ class ExpandablePanel extends StatelessWidget {
     }
 
     Widget buildHeader(Widget child) {
-      return tapHeaderToExpand ? ExpandableButton(child: child): child;
+      return tapHeaderToExpand ?
+        ExpandableButton(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: 45.0),
+            child: child
+          )
+        ): child;
     }
 
     Widget buildWithHeader() {
-      if(collapsed == null && expanded == null)
-        return header;
       return Column(
         children: <Widget>[
           buildHeaderRow(buildHeader(header)),
@@ -159,7 +158,7 @@ class ExpandablePanel extends StatelessWidget {
     }
 
     Widget buildWithoutHeader() {
-      return buildHeaderRow(builder(context, buildHeader(collapsed ?? Container()), expanded));
+      return buildHeaderRow(builder(context, buildHeader(collapsed), expanded));
     }
 
     return ScopedModel<ExpandableModel>(
