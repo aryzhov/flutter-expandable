@@ -2,33 +2,53 @@
 library expandable;
 
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
 
-/// Contains the state (expanded or collapsed) of ExpandableBody.
-/// This model should be exposed via [ScopedModel] to
-/// [Expandable] and [ExpandedPanel].
-class ExpandableModel extends Model {
-  bool _expanded;
+class ExpandableNotifier extends InheritedNotifier<ExpandableController> {
+  ExpandableNotifier(
+      {
+      // An optional key
+      Key key,
 
+      /// If the controller is not provided, it's created with the initial state of collapsed.
+      ExpandableController controller,
+      @required
+
+          /// The child can be any widget which contains [Expandable] widgets in its widget tree.
+          Widget child})
+      : super(key: key, notifier: controller ?? ExpandableController(), child: child);
+}
+
+/// Controls the state (expanded or collapsed) of one or more [Expandable].
+/// The controller should be provided to [Expandable] via [ExpandableNotifier].
+class ExpandableController extends ValueNotifier<bool> {
   /// Returns [true] if the state is expanded, [false] if collapsed.
-  bool get expanded => _expanded;
+  bool get expanded => value;
 
-  ExpandableModel([this._expanded = false]);
+  ExpandableController([expanded = false]) : super(expanded);
 
-  /// Sets the expanded state. Notifies the listeners if the state has changed.
+  /// Sets the expanded state.
   set expanded(bool exp) {
-    if (this._expanded != exp) {
-      this._expanded = exp;
-      notifyListeners();
-    }
+    value = exp;
+  }
+
+  /// Sets the expanded state to the opposite of the current state.
+  void toggle() {
+    expanded = !expanded;
+  }
+
+  static ExpandableController of(BuildContext context, {bool rebuildOnChange = true}) {
+    final notifier =
+        rebuildOnChange ? context.inheritFromWidgetOfExactType(ExpandableNotifier) : context.ancestorWidgetOfExactType(ExpandableNotifier);
+    return (notifier as ExpandableNotifier).notifier;
   }
 }
 
 /// Shows either the expanded or the collapsed child depending on the state.
-/// The state is determined by an instance of [ExpandableModel] provided by [ScopedModel]
+/// The state is determined by an instance of [ExpandableController] provided by [ScopedModel]
 class Expandable extends StatelessWidget {
   // Whe widget to show when collapsed
   final Widget collapsed;
+
   // The widget to show when expanded
   final Widget expanded;
   final Duration animationDuration;
@@ -40,8 +60,8 @@ class Expandable extends StatelessWidget {
   final Curve sizeCurve;
 
   Expandable(
-      {@required this.collapsed,
-      @required this.expanded,
+      {this.collapsed,
+      this.expanded,
       this.collapsedFadeStart = 0,
       this.collapsedFadeEnd = 1,
       this.expandedFadeStart = 0,
@@ -52,7 +72,7 @@ class Expandable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var model = ScopedModel.of<ExpandableModel>(context, rebuildOnChange: true);
+    var controller = ExpandableController.of(context);
 
     return AnimatedCrossFade(
       firstChild: collapsed ?? Container(),
@@ -60,7 +80,7 @@ class Expandable extends StatelessWidget {
       firstCurve: Interval(collapsedFadeStart, collapsedFadeEnd, curve: fadeCurve),
       secondCurve: Interval(expandedFadeStart, expandedFadeEnd, curve: fadeCurve),
       sizeCurve: sizeCurve,
-      crossFadeState: model.expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+      crossFadeState: controller.expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
       duration: animationDuration,
     );
   }
@@ -72,27 +92,34 @@ typedef Widget ExpandableBuilder(BuildContext context, Widget collapsed, Widget 
 enum ExpandablePanelIconPlacement {
   /// The icon is on the left of the header
   left,
+
   /// The icon is on the right of the header
   right,
 }
 
 /// A configurable widget for showing user-expandable content with an optional expand button.
 class ExpandablePanel extends StatelessWidget {
-
   /// If specified, the header is always shown, and the expandable part is shown under the header
   final Widget header;
+
   /// The widget shown in the collspaed state
   final Widget collapsed;
+
   /// The widget shown in the expanded state
   final Widget expanded;
+
   /// If true then the panel is expanded initially
   final bool initialExpanded;
+
   /// If true, the header can be clicked by the user to expand
   final bool tapHeaderToExpand;
+
   /// If true, an expand icon is shown on the right
   final bool hasIcon;
+
   /// Builds an Expandable object
   final ExpandableBuilder builder;
+
   /// Expand/collspse icon placement
   final ExpandablePanelIconPlacement iconPlacement;
 
@@ -103,22 +130,20 @@ class ExpandablePanel extends StatelessWidget {
     );
   }
 
-  ExpandablePanel({
-    this.collapsed,
-    this.header,
-    this.expanded,
-    this.initialExpanded = false,
-    this.tapHeaderToExpand = true,
-    this.hasIcon = true,
-    this.iconPlacement = ExpandablePanelIconPlacement.right,
-    this.builder = defaultExpandableBuilder});
+  ExpandablePanel(
+      {this.collapsed,
+      this.header,
+      this.expanded,
+      this.initialExpanded = false,
+      this.tapHeaderToExpand = true,
+      this.hasIcon = true,
+      this.iconPlacement = ExpandablePanelIconPlacement.right,
+      this.builder = defaultExpandableBuilder});
 
   @override
   Widget build(BuildContext context) {
-
-
     Widget buildHeaderRow(Widget child) {
-      if(!hasIcon) {
+      if (!hasIcon) {
         return child;
       } else {
         final rowChildren = <Widget>[
@@ -132,28 +157,18 @@ class ExpandablePanel extends StatelessWidget {
         ];
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: iconPlacement == ExpandablePanelIconPlacement.right ?
-                    rowChildren: rowChildren.reversed.toList(),
+          children: iconPlacement == ExpandablePanelIconPlacement.right ? rowChildren : rowChildren.reversed.toList(),
         );
       }
     }
 
     Widget buildHeader(Widget child) {
-      return tapHeaderToExpand ?
-        ExpandableButton(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: 45.0),
-            child: child
-          )
-        ): child;
+      return tapHeaderToExpand ? ExpandableButton(child: ConstrainedBox(constraints: BoxConstraints(minHeight: 45.0), child: child)) : child;
     }
 
     Widget buildWithHeader() {
       return Column(
-        children: <Widget>[
-          buildHeaderRow(buildHeader(header)),
-          builder(context, collapsed, expanded)
-        ],
+        children: <Widget>[buildHeaderRow(buildHeader(header)), builder(context, collapsed, expanded)],
       );
     }
 
@@ -161,32 +176,29 @@ class ExpandablePanel extends StatelessWidget {
       return buildHeaderRow(builder(context, buildHeader(collapsed), expanded));
     }
 
-    return ScopedModel<ExpandableModel>(
-      model: ExpandableModel(initialExpanded),
-      child: this.header != null ? buildWithHeader(): buildWithoutHeader(),
+    return ExpandableNotifier(
+      controller: ExpandableController(initialExpanded),
+      child: this.header != null ? buildWithHeader() : buildWithoutHeader(),
     );
   }
-
 }
 
-/// An down/up arrow icon that toggles the state of [ExpandableModel] when the user clicks on it.
+/// An down/up arrow icon that toggles the state of [ExpandableController] when the user clicks on it.
 /// The model is accessed via [ScopedModelDescendant].
 class ExpandableIcon extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    final model = ScopedModel.of<ExpandableModel>(context, rebuildOnChange: true);
+    final controller = ExpandableController.of(context);
     return ExpandIcon(
-      isExpanded: model.expanded,
+      isExpanded: controller.expanded,
       onPressed: (exp) {
-        model.expanded = !model.expanded;
+        controller.toggle();
       },
     );
   }
 }
 
-/// Toggles the state of [ExpandableModel] when the user clicks on it.
-/// The model is accessed via [ScopedModelDescendant].
+/// Toggles the state of [ExpandableController] when the user clicks on it.
 class ExpandableButton extends StatelessWidget {
   final Widget child;
 
@@ -194,13 +206,11 @@ class ExpandableButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = ScopedModel.of<ExpandableModel>(context, rebuildOnChange: true);
+    final controller = ExpandableController.of(context);
     return InkWell(
-      onTap: () {
-        model.expanded = !model.expanded;
-      },
-      child: child
-    );
+        onTap: () {
+          controller.toggle();
+        },
+        child: child);
   }
 }
-

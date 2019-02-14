@@ -1,6 +1,5 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 void main() => runApp(MyApp());
 
@@ -56,8 +55,7 @@ class Card1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
-      child: ScopedModel<ExpandableModel>(
-        model: ExpandableModel(),
+      child: ExpandableNotifier(
         child: Column(
           children: <Widget>[
               SizedBox(
@@ -207,8 +205,7 @@ class Card2 extends StatelessWidget {
 
     return Card(
       clipBehavior: Clip.antiAlias,
-      child: ScopedModel<ExpandableModel>(
-        model: ExpandableModel(),
+      child: ExpandableNotifier(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -228,22 +225,23 @@ class Card2 extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                ScopedModelDescendant<ExpandableModel>(
-                  builder: (_, __, model) {
+                Builder(
+                  builder: (context) {
+                    var exp = ExpandableController.of(context);
                     return MaterialButton(
-                      child: Text(model.expanded ? "COLLAPSE": "EXPAND",
+                      child: Text(exp.expanded ? "COLLAPSE": "EXPAND",
                         style: Theme.of(context).textTheme.button.copyWith(
                           color: Colors.deepPurple
                         ),
                       ),
                       onPressed: () {
-                        model.expanded = !model.expanded;
+                        exp.toggle();
                       },
                     );
-                  }
-                )
+                  },
+                ),
               ],
-            )
+            ),
           ],
         ),
       )

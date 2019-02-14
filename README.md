@@ -20,9 +20,6 @@ for making other widgets, for example, expandable Card widgets.
 
 ## Usage
 
-`Expandable` uses [Scoped Model](https://pub.dartlang.org/packages/scoped_model) plugin
-for communicating model state changes.
-
 The easiest way to make a user-expandable widget is to use `ExpandablePanel`:
 
 ```dart
@@ -43,7 +40,9 @@ class Widget1 extends StatelessWidget {
 }
 ```
 
-You can also implement complex expandable widgets as shown below.
+You can also implement complex expandable widgets by controlling the state of `Expandable` widgets 
+using `ExpandableController`. The controller is provided to `Expandable` widgets by the means
+of `ExpandableNotifier`. The following example demonstrates this usage pattern:
 
 ```dart
 /// This widget has three sections: title, pictures, and description, which all expand
@@ -52,8 +51,8 @@ class Widget2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<ExpandableModel>(
-      model: ExpandableModel(),
+    return ExpandableNotifier(
+      controller: ExpandableController(false),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -73,16 +72,17 @@ class Widget2 extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              ScopedModelDescendant<ExpandableModel>(
-                builder: (context, _, model) {
+              Builder(
+                builder: (context) {
+                  var exp = ExpandableController.of(context);
                   return MaterialButton(
-                    child: Text(model.expanded ? "COLLAPSE": "EXPAND",
+                    child: Text(exp.expanded ? "COLLAPSE": "EXPAND",
                       style: Theme.of(context).textTheme.button.copyWith(
                         color: Colors.deepPurple
                       ),
                     ),
                     onPressed: () {
-                      model.expanded = !model.expanded;
+                      exp.toggle();
                     },
                   );
                 }
@@ -96,3 +96,14 @@ class Widget2 extends StatelessWidget {
 }
 ```
 
+## Migration from version 1.x
+
+When Expandable was initially created, it was using [Scoped Model](https://pub.dartlang.org/packages/scoped_model) plugin
+for communicating state changes. In version 2.0.0 the dependency on `ScopedModel` was eliminated.
+
+This is a breaking change, so a code change is necessary to make the code work. 
+The migration is mainly a search/replace:
+
+- `ScopedModel<ExpandableModel>` -> `ExpandableNotifier`
+- `ExpandableModel` -> `ExpandableController`
+- `ScopedModel.of<ExpandableModel>` -> `ExpandableController.of`
