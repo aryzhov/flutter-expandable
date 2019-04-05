@@ -114,6 +114,9 @@ class ExpandablePanel extends StatefulWidget {
   /// If true, the header can be clicked by the user to expand
   final bool tapHeaderToExpand;
 
+  /// If true, the body can be clicked by the user to collapse
+  final bool tapBodyToCollapse;
+
   /// If true, an expand icon is shown on the right
   final bool hasIcon;
 
@@ -136,6 +139,7 @@ class ExpandablePanel extends StatefulWidget {
       this.expanded,
       this.initialExpanded = false,
       this.tapHeaderToExpand = true,
+      this.tapBodyToCollapse = false,
       this.hasIcon = true,
       this.iconPlacement = ExpandablePanelIconPlacement.right,
       this.builder = defaultExpandableBuilder});
@@ -178,14 +182,18 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
       return widget.tapHeaderToExpand ? ExpandableButton(child: child) : child;
     }
 
+    Widget buildBody(Widget child) {
+      return widget.tapBodyToCollapse ? ExpandableButton(child: child) : child;
+    }
+
     Widget buildWithHeader() {
       return Column(
-        children: <Widget>[buildHeaderRow(buildHeader(widget.header)), widget.builder(context, widget.collapsed, widget.expanded)],
+        children: <Widget>[buildHeaderRow(buildHeader(widget.header)), widget.builder(context, widget.collapsed, buildBody(widget.expanded))],
       );
     }
 
     Widget buildWithoutHeader() {
-      return buildHeaderRow(widget.builder(context, buildHeader(widget.collapsed), widget.expanded));
+      return buildHeaderRow(widget.builder(context, buildHeader(widget.collapsed), buildBody(widget.expanded)));
     }
 
     return ExpandableNotifier(
