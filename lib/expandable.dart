@@ -175,7 +175,7 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
     }
 
     Widget buildHeader(Widget child) {
-      return widget.tapHeaderToExpand ? ExpandableButton(child: ConstrainedBox(constraints: BoxConstraints(minHeight: 45.0), child: child)) : child;
+      return widget.tapHeaderToExpand ? ExpandableButton(child: child) : child;
     }
 
     Widget buildWithHeader() {
