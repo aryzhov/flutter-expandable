@@ -1,4 +1,9 @@
-## [2.0.0] - 2/14/2019
+## [2.1.0] - 04/5/2019
+
+* ExpandablePanel does not lose its state if its parent is rebuilt.
+* Example file is moved to `example` folder for ease of running it.
+
+## [2.0.0] - 02/14/2019
 
 * Eliminated the dependency on ScopedModel 
 * Introduced ExpandableNotifier and ExpandableController
