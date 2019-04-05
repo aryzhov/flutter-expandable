@@ -98,7 +98,7 @@ enum ExpandablePanelIconPlacement {
 }
 
 /// A configurable widget for showing user-expandable content with an optional expand button.
-class ExpandablePanel extends StatelessWidget {
+class ExpandablePanel extends StatefulWidget {
   /// If specified, the header is always shown, and the expandable part is shown under the header
   final Widget header;
 
@@ -113,6 +113,9 @@ class ExpandablePanel extends StatelessWidget {
 
   /// If true, the header can be clicked by the user to expand
   final bool tapHeaderToExpand;
+
+  /// If true, the body can be clicked by the user to collapse
+  final bool tapBodyToCollapse;
 
   /// If true, an expand icon is shown on the right
   final bool hasIcon;
@@ -136,14 +139,27 @@ class ExpandablePanel extends StatelessWidget {
       this.expanded,
       this.initialExpanded = false,
       this.tapHeaderToExpand = true,
+      this.tapBodyToCollapse = false,
       this.hasIcon = true,
       this.iconPlacement = ExpandablePanelIconPlacement.right,
       this.builder = defaultExpandableBuilder});
 
   @override
+  _ExpandablePanelState createState() => _ExpandablePanelState();
+}
+
+class _ExpandablePanelState extends State<ExpandablePanel> {
+  ExpandableController expandableController;
+
+  @override
+  void initState() {
+    expandableController = ExpandableController(widget.initialExpanded);
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget buildHeaderRow(Widget child) {
-      if (!hasIcon) {
+      if (!widget.hasIcon) {
         return child;
       } else {
         final rowChildren = <Widget>[
@@ -157,28 +173,32 @@ class ExpandablePanel extends StatelessWidget {
         ];
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: iconPlacement == ExpandablePanelIconPlacement.right ? rowChildren : rowChildren.reversed.toList(),
+          children: widget.iconPlacement == ExpandablePanelIconPlacement.right ? rowChildren : rowChildren.reversed.toList(),
         );
       }
     }
 
     Widget buildHeader(Widget child) {
-      return tapHeaderToExpand ? ExpandableButton(child: ConstrainedBox(constraints: BoxConstraints(minHeight: 45.0), child: child)) : child;
+      return widget.tapHeaderToExpand ? ExpandableButton(child: child) : child;
+    }
+
+    Widget buildBody(Widget child) {
+      return widget.tapBodyToCollapse ? ExpandableButton(child: child) : child;
     }
 
     Widget buildWithHeader() {
       return Column(
-        children: <Widget>[buildHeaderRow(buildHeader(header)), builder(context, collapsed, expanded)],
+        children: <Widget>[buildHeaderRow(buildHeader(widget.header)), widget.builder(context, widget.collapsed, buildBody(widget.expanded))],
       );
     }
 
     Widget buildWithoutHeader() {
-      return buildHeaderRow(builder(context, buildHeader(collapsed), expanded));
+      return buildHeaderRow(widget.builder(context, buildHeader(widget.collapsed), buildBody(widget.expanded)));
     }
 
     return ExpandableNotifier(
-      controller: ExpandableController(initialExpanded),
-      child: this.header != null ? buildWithHeader() : buildWithoutHeader(),
+      controller: expandableController,
+      child: this.widget.header != null ? buildWithHeader() : buildWithoutHeader(),
     );
   }
 }
