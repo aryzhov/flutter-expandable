@@ -60,7 +60,8 @@ class Expandable extends StatelessWidget {
   final Curve sizeCurve;
 
   Expandable(
-      {this.collapsed,
+      {Key key,
+      this.collapsed,
       this.expanded,
       this.collapsedFadeStart = 0,
       this.collapsedFadeEnd = 1,
@@ -68,7 +69,8 @@ class Expandable extends StatelessWidget {
       this.expandedFadeEnd = 1,
       this.fadeCurve = Curves.linear,
       this.sizeCurve = Curves.fastOutSlowIn,
-      this.animationDuration = const Duration(milliseconds: 300)});
+      this.animationDuration = const Duration(milliseconds: 300)})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +136,8 @@ class ExpandablePanel extends StatefulWidget {
   }
 
   ExpandablePanel(
-      {this.collapsed,
+      {Key key,
+      this.collapsed,
       this.header,
       this.expanded,
       this.initialExpanded = false,
@@ -142,7 +145,8 @@ class ExpandablePanel extends StatefulWidget {
       this.tapBodyToCollapse = false,
       this.hasIcon = true,
       this.iconPlacement = ExpandablePanelIconPlacement.right,
-      this.builder = defaultExpandableBuilder});
+      this.builder = defaultExpandableBuilder})
+      : super(key: key);
 
   @override
   _ExpandablePanelState createState() => _ExpandablePanelState();

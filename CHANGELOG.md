@@ -1,3 +1,7 @@
+## [2.1.1] - 04/17/2019
+
+* Added the optional "key" parameter to Expandable and ExpandablePanel.
+
 ## [2.1.0] - 04/5/2019
 
 * ExpandablePanel does not lose its state if its parent is rebuilt.
