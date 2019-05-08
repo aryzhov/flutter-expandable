@@ -157,6 +157,7 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
 
   @override
   void initState() {
+    super.initState();
     expandableController = ExpandableController(widget.initialExpanded);
   }
 
