@@ -99,6 +99,12 @@ enum ExpandablePanelIconPlacement {
   right,
 }
 
+enum ExpandablePanelHeaderAlignment {
+  top,
+  center,
+  bottom,
+}
+
 /// A configurable widget for showing user-expandable content with an optional expand button.
 class ExpandablePanel extends StatefulWidget {
   /// If specified, the header is always shown, and the expandable part is shown under the header
@@ -128,6 +134,9 @@ class ExpandablePanel extends StatefulWidget {
   /// Expand/collspse icon placement
   final ExpandablePanelIconPlacement iconPlacement;
 
+  /// Alignment of the header widget
+  final ExpandablePanelHeaderAlignment headerAlignment;
+
   static Widget defaultExpandableBuilder(BuildContext context, Widget collapsed, Widget expanded) {
     return Expandable(
       collapsed: collapsed,
@@ -145,7 +154,9 @@ class ExpandablePanel extends StatefulWidget {
       this.tapBodyToCollapse = false,
       this.hasIcon = true,
       this.iconPlacement = ExpandablePanelIconPlacement.right,
-      this.builder = defaultExpandableBuilder})
+      this.builder = defaultExpandableBuilder,
+      this.headerAlignment = ExpandablePanelHeaderAlignment.top,
+      })
       : super(key: key);
 
   @override
@@ -163,6 +174,20 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
 
   @override
   Widget build(BuildContext context) {
+    CrossAxisAlignment headerAlignment;
+
+    switch (widget.headerAlignment){
+      case ExpandablePanelHeaderAlignment.center:
+        headerAlignment = CrossAxisAlignment.center;
+        break;
+      case ExpandablePanelHeaderAlignment.bottom:
+        headerAlignment = CrossAxisAlignment.end;
+        break;
+      case ExpandablePanelHeaderAlignment.top:
+      default:
+        headerAlignment = CrossAxisAlignment.start;
+    }
+
     Widget buildHeaderRow(Widget child) {
       if (!widget.hasIcon) {
         return child;
@@ -177,7 +202,7 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
           ),
         ];
         return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: headerAlignment,
           children: widget.iconPlacement == ExpandablePanelIconPlacement.right ? rowChildren : rowChildren.reversed.toList(),
         );
       }
