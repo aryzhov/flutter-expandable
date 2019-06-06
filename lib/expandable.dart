@@ -174,20 +174,6 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
 
   @override
   Widget build(BuildContext context) {
-    CrossAxisAlignment headerAlignment;
-
-    switch (widget.headerAlignment){
-      case ExpandablePanelHeaderAlignment.center:
-        headerAlignment = CrossAxisAlignment.center;
-        break;
-      case ExpandablePanelHeaderAlignment.bottom:
-        headerAlignment = CrossAxisAlignment.end;
-        break;
-      case ExpandablePanelHeaderAlignment.top:
-      default:
-        headerAlignment = CrossAxisAlignment.start;
-    }
-
     Widget buildHeaderRow(Widget child) {
       if (!widget.hasIcon) {
         return child;
@@ -196,13 +182,10 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
           Expanded(
             child: child,
           ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: ExpandableIcon(),
-          ),
+          ExpandableIcon(),
         ];
         return Row(
-          crossAxisAlignment: headerAlignment,
+          crossAxisAlignment: calculateHeaderCrossAxisAlignment(),
           children: widget.iconPlacement == ExpandablePanelIconPlacement.right ? rowChildren : rowChildren.reversed.toList(),
         );
       }
@@ -230,6 +213,18 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
       controller: expandableController,
       child: this.widget.header != null ? buildWithHeader() : buildWithoutHeader(),
     );
+  }
+
+  CrossAxisAlignment calculateHeaderCrossAxisAlignment() {
+    switch (widget.headerAlignment){
+      case ExpandablePanelHeaderAlignment.center:
+        return CrossAxisAlignment.center;
+      case ExpandablePanelHeaderAlignment.bottom:
+        return CrossAxisAlignment.end;
+      case ExpandablePanelHeaderAlignment.top:
+      default:
+      return CrossAxisAlignment.start;
+    }
   }
 }
 
