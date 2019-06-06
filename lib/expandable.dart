@@ -99,6 +99,12 @@ enum ExpandablePanelIconPlacement {
   right,
 }
 
+enum ExpandablePanelHeaderAlignment {
+  top,
+  center,
+  bottom,
+}
+
 /// A configurable widget for showing user-expandable content with an optional expand button.
 class ExpandablePanel extends StatefulWidget {
   /// If specified, the header is always shown, and the expandable part is shown under the header
@@ -128,6 +134,9 @@ class ExpandablePanel extends StatefulWidget {
   /// Expand/collspse icon placement
   final ExpandablePanelIconPlacement iconPlacement;
 
+  /// Alignment of the header widget
+  final ExpandablePanelHeaderAlignment headerAlignment;
+
   static Widget defaultExpandableBuilder(BuildContext context, Widget collapsed, Widget expanded) {
     return Expandable(
       collapsed: collapsed,
@@ -145,7 +154,9 @@ class ExpandablePanel extends StatefulWidget {
       this.tapBodyToCollapse = false,
       this.hasIcon = true,
       this.iconPlacement = ExpandablePanelIconPlacement.right,
-      this.builder = defaultExpandableBuilder})
+      this.builder = defaultExpandableBuilder,
+      this.headerAlignment = ExpandablePanelHeaderAlignment.top,
+      })
       : super(key: key);
 
   @override
@@ -171,13 +182,10 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
           Expanded(
             child: child,
           ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: ExpandableIcon(),
-          ),
+          ExpandableIcon(),
         ];
         return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: calculateHeaderCrossAxisAlignment(),
           children: widget.iconPlacement == ExpandablePanelIconPlacement.right ? rowChildren : rowChildren.reversed.toList(),
         );
       }
@@ -205,6 +213,18 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
       controller: expandableController,
       child: this.widget.header != null ? buildWithHeader() : buildWithoutHeader(),
     );
+  }
+
+  CrossAxisAlignment calculateHeaderCrossAxisAlignment() {
+    switch (widget.headerAlignment){
+      case ExpandablePanelHeaderAlignment.center:
+        return CrossAxisAlignment.center;
+      case ExpandablePanelHeaderAlignment.bottom:
+        return CrossAxisAlignment.end;
+      case ExpandablePanelHeaderAlignment.top:
+      default:
+      return CrossAxisAlignment.start;
+    }
   }
 }
 
