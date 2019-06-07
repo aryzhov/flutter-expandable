@@ -70,8 +70,9 @@ class Card1 extends StatelessWidget {
             ),
             ExpandablePanel(
               tapHeaderToExpand: true,
+              headerAlignment: ExpandablePanelHeaderAlignment.center,
               header: Padding(
-                padding: EdgeInsets.only(top: 10.0, left: 10),
+                padding: EdgeInsets.all(10),
                 child: Text("Lorem ipsum",
                   style: Theme.of(context).textTheme.body2,
                 )
