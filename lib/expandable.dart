@@ -37,8 +37,9 @@ class ExpandableController extends ValueNotifier<bool> {
   }
 
   static ExpandableController of(BuildContext context, {bool rebuildOnChange = true}) {
-    final notifier =
-        rebuildOnChange ? context.inheritFromWidgetOfExactType(ExpandableNotifier) : context.ancestorWidgetOfExactType(ExpandableNotifier);
+    final notifier = rebuildOnChange
+        ? context.inheritFromWidgetOfExactType(ExpandableNotifier)
+        : context.ancestorWidgetOfExactType(ExpandableNotifier);
     return (notifier as ExpandableNotifier).notifier;
   }
 }
@@ -134,7 +135,7 @@ class ExpandablePanel extends StatefulWidget {
   /// Expand/collspse icon placement
   final ExpandablePanelIconPlacement iconPlacement;
 
-  /// Alignment of the header widget
+  /// Alignment of the header widget relative to the icon
   final ExpandablePanelHeaderAlignment headerAlignment;
 
   static Widget defaultExpandableBuilder(BuildContext context, Widget collapsed, Widget expanded) {
@@ -144,20 +145,19 @@ class ExpandablePanel extends StatefulWidget {
     );
   }
 
-  ExpandablePanel(
-      {Key key,
-      this.collapsed,
-      this.header,
-      this.expanded,
-      this.initialExpanded = false,
-      this.tapHeaderToExpand = true,
-      this.tapBodyToCollapse = false,
-      this.hasIcon = true,
-      this.iconPlacement = ExpandablePanelIconPlacement.right,
-      this.builder = defaultExpandableBuilder,
-      this.headerAlignment = ExpandablePanelHeaderAlignment.top,
-      })
-      : super(key: key);
+  ExpandablePanel({
+    Key key,
+    this.collapsed,
+    this.header,
+    this.expanded,
+    this.initialExpanded = false,
+    this.tapHeaderToExpand = true,
+    this.tapBodyToCollapse = false,
+    this.hasIcon = true,
+    this.iconPlacement = ExpandablePanelIconPlacement.right,
+    this.builder = defaultExpandableBuilder,
+    this.headerAlignment = ExpandablePanelHeaderAlignment.top,
+  }) : super(key: key);
 
   @override
   _ExpandablePanelState createState() => _ExpandablePanelState();
@@ -186,7 +186,8 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
         ];
         return Row(
           crossAxisAlignment: calculateHeaderCrossAxisAlignment(),
-          children: widget.iconPlacement == ExpandablePanelIconPlacement.right ? rowChildren : rowChildren.reversed.toList(),
+          children:
+              widget.iconPlacement == ExpandablePanelIconPlacement.right ? rowChildren : rowChildren.reversed.toList(),
         );
       }
     }
@@ -201,7 +202,10 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
 
     Widget buildWithHeader() {
       return Column(
-        children: <Widget>[buildHeaderRow(buildHeader(widget.header)), widget.builder(context, widget.collapsed, buildBody(widget.expanded))],
+        children: <Widget>[
+          buildHeaderRow(buildHeader(widget.header)),
+          widget.builder(context, widget.collapsed, buildBody(widget.expanded))
+        ],
       );
     }
 
@@ -216,14 +220,13 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
   }
 
   CrossAxisAlignment calculateHeaderCrossAxisAlignment() {
-    switch (widget.headerAlignment){
+    switch (widget.headerAlignment) {
+      case ExpandablePanelHeaderAlignment.top:
+        return CrossAxisAlignment.start;
       case ExpandablePanelHeaderAlignment.center:
         return CrossAxisAlignment.center;
       case ExpandablePanelHeaderAlignment.bottom:
         return CrossAxisAlignment.end;
-      case ExpandablePanelHeaderAlignment.top:
-      default:
-      return CrossAxisAlignment.start;
     }
   }
 }

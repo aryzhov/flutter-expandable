@@ -1,6 +1,10 @@
+## [2.2.0] - 04/17/2019
+
+* Added the optional `headerAlignment` parameter to `ExpandablePanel`.
+
 ## [2.1.1] - 04/17/2019
 
-* Added the optional "key" parameter to Expandable and ExpandablePanel.
+* Added the optional `key` parameter to `Expandable` and `ExpandablePanel`.
 
 ## [2.1.0] - 04/5/2019
 
@@ -9,14 +13,14 @@
 
 ## [2.0.0] - 02/14/2019
 
-* Eliminated the dependency on ScopedModel 
-* Introduced ExpandableNotifier and ExpandableController
-* This is a breaking change. See README.md for details on migration from 1.x to 2.0
+* Eliminated the dependency on ScopedModel.
+* Introduced ExpandableNotifier and ExpandableController.
+* This is a breaking change. See README.md for details on migration from 1.x to 2.0.
 
 ## [1.1.0] - 02/01/2019
 
-* Added ExpandablePanel, a configurable expandable widget with optional header and icon 
+* Added `ExpandablePanel`, a configurable expandable widget with optional header and icon. 
 
 ## [1.0.0] - 01/29/2019
 
-* Initial release
+* Initial release.

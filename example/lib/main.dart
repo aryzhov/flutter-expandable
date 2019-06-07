@@ -63,9 +63,8 @@ class Card1 extends StatelessWidget {
               height: 150.0,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey,
+                  color: Colors.orange,
                   shape: BoxShape.rectangle,
-                  image: DecorationImage(image: AssetImage('images/IMG_4164.JPG'), fit: BoxFit.cover),
                 ),
               ),
             ),
@@ -101,14 +100,13 @@ class Card2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    buildImg(String path, double height) {
+    buildImg(Color color, double height) {
       return SizedBox(
         height: height,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.grey,
+            color: color,
             shape: BoxShape.rectangle,
-            image: DecorationImage(image: AssetImage(path), fit: BoxFit.cover),
           ),
         )
       );
@@ -134,7 +132,7 @@ class Card2 extends StatelessWidget {
     }
 
     buildCollapsed2() {
-      return buildImg('images/IMG_3897.JPG', 150.0);
+      return buildImg(Colors.lightGreenAccent, 150.0);
     }
 
     buildCollapsed3() {
@@ -170,20 +168,20 @@ class Card2 extends StatelessWidget {
           Row(
             children: <Widget>[
               Expanded(
-                child: buildImg('images/IMG_4164.JPG', 100.0)
+                child: buildImg(Colors.lightGreenAccent, 100.0)
               ),
               Expanded(
-                child: buildImg('images/IMG_2840.JPG', 100.0)
+                child: buildImg(Colors.orange, 100.0)
               ),
             ],
           ),
           Row(
             children: <Widget>[
               Expanded(
-                child: buildImg('images/IMG_4163.JPG', 100.0)
+                child: buildImg(Colors.lightBlue, 100.0)
               ),
               Expanded(
-                child: buildImg('images/IMG_4203.JPG', 100.0)
+                child: buildImg(Colors.cyan, 100.0)
               ),
             ],
           ),
