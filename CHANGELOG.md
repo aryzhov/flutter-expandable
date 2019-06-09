@@ -1,7 +1,6 @@
-## [2.2.2] - 06/09/2019
+## [2.2.2+3] - 06/09/2019
 
-* Addressed lint warnings and updated dependencies.
-
+* Disabled the iconColor parameter until version 1.7.3 is published to stable.
 
 ## [2.2.1] - 06/09/2019
 

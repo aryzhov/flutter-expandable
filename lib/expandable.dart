@@ -136,7 +136,7 @@ class ExpandablePanel extends StatefulWidget {
   final ExpandablePanelIconPlacement iconPlacement;
 
   // Expand icon color
-  final Color iconColor;
+//  final Color iconColor;
 
   /// Alignment of the header widget relative to the icon
   final ExpandablePanelHeaderAlignment headerAlignment;
@@ -159,7 +159,7 @@ class ExpandablePanel extends StatefulWidget {
     this.tapBodyToCollapse = false,
     this.hasIcon = true,
     this.iconPlacement = ExpandablePanelIconPlacement.right,
-    this.iconColor, // The default color is based on the theme
+//    this.iconColor, // The default color is based on the theme
     this.builder = defaultExpandableBuilder,
     this.headerAlignment = ExpandablePanelHeaderAlignment.top,
   }) : super(key: key);
@@ -187,7 +187,8 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
           Expanded(
             child: child,
           ),
-          ExpandableIcon(color: widget.iconColor,),
+//          ExpandableIcon(color: widget.iconColor,),
+          ExpandableIcon(),
         ];
         return Row(
           crossAxisAlignment: calculateHeaderCrossAxisAlignment(),
@@ -250,7 +251,7 @@ class ExpandableIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = ExpandableController.of(context);
     return ExpandIcon(
-      color: color,
+//      color: color,
       isExpanded: controller.expanded,
       onPressed: (exp) {
         controller.toggle();
