@@ -233,6 +233,8 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
       case ExpandablePanelHeaderAlignment.bottom:
         return CrossAxisAlignment.end;
     }
+    assert(false);
+    return null;
   }
 }
 
