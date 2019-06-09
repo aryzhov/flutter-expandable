@@ -1,3 +1,8 @@
+## [2.2.2] - 06/09/2019
+
+* Addressed lint warnings and updated dependencies.
+
+
 ## [2.2.1] - 06/09/2019
 
 * Added the optional `iconColor` parameter to `ExpandablePanel`.
