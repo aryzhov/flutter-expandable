@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Expandable Demo',
       theme: ThemeData(
-        primarySwatch: Colors.orange,
+        primarySwatch: Colors.blue,
       ),
       home: MyHomePage(),
     );
@@ -85,6 +85,7 @@ class Card1 extends StatelessWidget {
                   child: Expandable(
                     collapsed: collapsed,
                     expanded: expanded,
+                    crossFadePoint: 0,
                   ),
                 );
               },
