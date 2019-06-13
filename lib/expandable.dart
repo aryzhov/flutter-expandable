@@ -3,6 +3,8 @@ library expandable;
 
 import 'package:flutter/material.dart';
 
+/// Makes an [ExpandableController] available to the widget subtree.
+/// Useful for making multiple [Expandable] widgets synchronized with a single controller.
 class ExpandableNotifier extends InheritedNotifier<ExpandableController> {
   ExpandableNotifier(
       {
@@ -52,6 +54,10 @@ class Expandable extends StatelessWidget {
 
   // The widget to show when expanded
   final Widget expanded;
+
+  // If the controller is not specified, it will be retrieved from the context
+  final ExpandableController controller;
+
   final Duration animationDuration;
   final double collapsedFadeStart;
   final double collapsedFadeEnd;
@@ -64,6 +70,7 @@ class Expandable extends StatelessWidget {
       {Key key,
       this.collapsed,
       this.expanded,
+      this.controller,
       this.collapsedFadeStart = 0,
       this.collapsedFadeEnd = 1,
       this.expandedFadeStart = 0,
@@ -75,7 +82,7 @@ class Expandable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var controller = ExpandableController.of(context);
+    final controller = this.controller ?? ExpandableController.of(context);
 
     return AnimatedCrossFade(
       firstChild: collapsed ?? Container(),
@@ -100,9 +107,15 @@ enum ExpandablePanelIconPlacement {
   right,
 }
 
+/// Determines the alignment of the header relative to the expand icon
 enum ExpandablePanelHeaderAlignment {
+  /// The header and the icon are aligned at their top positions
   top,
+
+  /// The header and the icon are aligned at their center positions
   center,
+
+  /// The header and the icon are aligned at their bottom positions
   bottom,
 }
 
@@ -111,7 +124,7 @@ class ExpandablePanel extends StatefulWidget {
   /// If specified, the header is always shown, and the expandable part is shown under the header
   final Widget header;
 
-  /// The widget shown in the collspaed state
+  /// The widget shown in the collapsed state
   final Widget collapsed;
 
   /// The widget shown in the expanded state
