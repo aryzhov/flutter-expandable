@@ -139,17 +139,21 @@ class ExpandablePanel extends StatefulWidget {
   /// If true, the body can be clicked by the user to collapse
   final bool tapBodyToCollapse;
 
-  /// If true, an expand icon is shown on the right
+  /// If true, Expand icon is shown on the right
   final bool hasIcon;
 
   /// Builds an Expandable object
   final ExpandableBuilder builder;
 
-  /// Expand/collspse icon placement
+  /// Expand icon placement
   final ExpandablePanelIconPlacement iconPlacement;
+
+  // Expand icon color
+//  final Color iconColor;
 
   /// Alignment of the header widget relative to the icon
   final ExpandablePanelHeaderAlignment headerAlignment;
+
 
   static Widget defaultExpandableBuilder(BuildContext context, Widget collapsed, Widget expanded) {
     return Expandable(
@@ -168,6 +172,7 @@ class ExpandablePanel extends StatefulWidget {
     this.tapBodyToCollapse = false,
     this.hasIcon = true,
     this.iconPlacement = ExpandablePanelIconPlacement.right,
+//    this.iconColor, // The default color is based on the theme
     this.builder = defaultExpandableBuilder,
     this.headerAlignment = ExpandablePanelHeaderAlignment.top,
   }) : super(key: key);
@@ -195,6 +200,7 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
           Expanded(
             child: child,
           ),
+//          ExpandableIcon(color: widget.iconColor,),
           ExpandableIcon(),
         ];
         return Row(
@@ -241,16 +247,24 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
       case ExpandablePanelHeaderAlignment.bottom:
         return CrossAxisAlignment.end;
     }
+    assert(false);
+    return null;
   }
 }
 
 /// An down/up arrow icon that toggles the state of [ExpandableController] when the user clicks on it.
 /// The model is accessed via [ScopedModelDescendant].
 class ExpandableIcon extends StatelessWidget {
+
+  final Color color;
+
+  ExpandableIcon({this.color});
+
   @override
   Widget build(BuildContext context) {
     final controller = ExpandableController.of(context);
     return ExpandIcon(
+//      color: color,
       isExpanded: controller.expanded,
       onPressed: (exp) {
         controller.toggle();

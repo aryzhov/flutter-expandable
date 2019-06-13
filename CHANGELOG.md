@@ -1,4 +1,12 @@
-## [2.2.0] - 04/17/2019
+## [2.2.2+3] - 06/09/2019
+
+* Disabled the iconColor parameter until version 1.7.3 is published to stable.
+
+## [2.2.1] - 06/09/2019
+
+* Added the optional `iconColor` parameter to `ExpandablePanel`.
+
+## [2.2.0] - 06/06/2019
 
 * Added the optional `headerAlignment` parameter to `ExpandablePanel`.
 
