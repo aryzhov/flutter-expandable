@@ -1,7 +1,7 @@
 // A library of Flutter widgets that allow creating expandable panels
 library expandable;
 
-import 'package:flutter/material.dart';
+import 'package:flutter_web/material.dart';
 
 
 /// Makes an [ExpandableController] available to the widget subtree.
