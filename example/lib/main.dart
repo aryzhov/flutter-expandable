@@ -81,7 +81,7 @@ class Card1 extends StatelessWidget {
                         style: Theme.of(context).textTheme.body2,
                       )
                     ),
-                    collapsed: Text(loremIpsum, softWrap: false, overflow: TextOverflow.ellipsis,),
+                    collapsed: Text(loremIpsum, softWrap: true, maxLines: 2, overflow: TextOverflow.ellipsis,),
                     expanded: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -247,15 +247,15 @@ class Card2 extends StatelessWidget {
                   children: <Widget>[
                     Builder(
                       builder: (context) {
-                        var exp = ExpandableController.of(context);
-                        return MaterialButton(
-                          child: Text(exp.expanded ? "COLLAPSE": "EXPAND",
+                        var controller = ExpandableController.of(context);
+                        return FlatButton(
+                          child: Text(controller.expanded ? "COLLAPSE": "EXPAND",
                             style: Theme.of(context).textTheme.button.copyWith(
                               color: Colors.deepPurple
                             ),
                           ),
                           onPressed: () {
-                            exp.toggle();
+                            controller.toggle();
                           },
                         );
                       },

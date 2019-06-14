@@ -1,3 +1,7 @@
+## [3.0.0+1] - 06/14/2019
+
+* Updated README and example app.
+
 ## [3.0.0] - 06/13/2019
 
 * Added `ShowOnExpand` widget.

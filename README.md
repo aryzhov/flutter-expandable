@@ -20,74 +20,52 @@ for making other widgets, for example, expandable Card widgets.
 
 ## Usage
 
-The easiest way to make a user-expandable widget is to use `ExpandablePanel`:
+The easiest way to make an expandable widget is to use `ExpandablePanel`:
 
 ```dart
-/// Shows a header along with an indicator icon, and expandable text below it: 
-class Widget1 extends StatelessWidget {
+class ArticleWidget extends StatelessWidget {
+  
+  final Article article;
+  
+  ArticleWidget(this.article);
 
   @override
   Widget build(BuildContext context) {
     return ExpandablePanel(
-      header: Text("My Header",
-        style: Theme.of(context).textTheme.body2,
-      ),
-      expanded: Text("Long long text", softWrap: true, ),
+      header: Text(article.title),
+      collapsed: Text(article.body, softWrap: true, maxLines: 2, overflow: TextOverflow.ellipsis,),
+      expanded: Text(article.body, softWrap: true, ),
       tapHeaderToExpand: true,
       hasIcon: true,
     );
   }
 }
 ```
-
-You can implement complex expandable widgets by controlling the state of `Expandable` widgets 
-using `ExpandableController`. The controller can be provided to `Expandable` widgets explicitly 
-or by the means of `ExpandableNotifier`, which uses `InheritedWidget` under the covers. 
-The following example demonstrates this usage pattern:
+`ExpandablePanel` has a number of properties to customize its behavior, but it's restricted by 
+having a title at the top and an expand icon shown as a down arrow (on the right or on the left). 
+If that's not enough, you can implement custom expandable widgets by using a combination of `Expandable`,
+`ExpandableNotifier`, and `ExpandableButton`: 
 
 ```dart
-/// This widget has three sections: title, pictures, and description, which all expand
-/// then the user clicks on the EXPAND button at the bottom.
-class Widget2 extends StatelessWidget {
+class EventPhotos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExpandableNotifier(
+    return ExpandableNotifier(  // <-- Provides ExpandableController to its children
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expandable(
-            collapsed: buildCollapsedTitle(),
-            expanded: buildExpandedTitle(),
-          ),
-          Expandable(
-            collapsed: buildCollapsedPictures(),
-            expanded: buildExpandedPictures(),
-          ),
-          Expandable(
-            collapsed: buildCollapsedDescription(),
-            expanded: buildExpandedDescription(),
-          ),
-          Divider(height: 0.0,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Builder(
-                builder: (context) {
-                  var controller = ExpandableController.of(context);
-                  return MaterialButton(
-                    child: Text(controller.expanded ? "COLLAPSE": "EXPAND",
-                      style: Theme.of(context).textTheme.button.copyWith(
-                        color: Colors.deepPurple
-                      ),
-                    ),
-                    onPressed: () {
-                      exp.toggle();
-                    },
-                  );
-                }
-              ),
-            ],
+        children: [
+          Expandable(           // <-- Driven by ExpandableController from ExpandableNotifier
+            collapsed: ExpandableButton(  // <-- Expands when tapped on the cover photo
+              child: buildCoverPhoto(),
+            ),
+            expanded: Column(  
+              children: [
+                buildAllPhotos(),
+                ExpandableButton(       // <-- Collapses when tapped on
+                  child: Text("Back"),
+                ),
+              ]
+            ),
           ),
         ],
       ),
