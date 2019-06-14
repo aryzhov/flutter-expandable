@@ -1,3 +1,11 @@
+## [3.0.0] - 06/13/2019
+
+* Added `ShowOnExpand` widget.
+* Moved `initialExpanded` from `ExpandablePanel` to `ExpandableNotifier`.
+* Moved `animationDuration` from `Expandable` to `ExpandableController`.
+* Made `ExpandableNotifier` to be a stateful widget.
+* Made `ExpandablePanel` a stateless widget.
+
 ## [2.2.3] - 06/13/2019
 
 * Added the optional `crossFadePoint` parameter.

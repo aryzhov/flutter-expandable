@@ -199,7 +199,7 @@ enum ExpandablePanelHeaderAlignment {
 }
 
 /// A configurable widget for showing user-expandable content with an optional expand button.
-class ExpandablePanel extends StatefulWidget {
+class ExpandablePanel extends StatelessWidget {
   /// If specified, the header is always shown, and the expandable part is shown under the header
   final Widget header;
 
@@ -259,58 +259,52 @@ class ExpandablePanel extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ExpandablePanelState createState() => _ExpandablePanelState();
-}
-
-class _ExpandablePanelState extends State<ExpandablePanel> {
-
-  @override
   Widget build(BuildContext context) {
     Widget buildHeaderRow(Widget child) {
-      if (!widget.hasIcon) {
+      if (!hasIcon) {
         return child;
       } else {
         final rowChildren = <Widget>[
           Expanded(
             child: child,
           ),
-//          ExpandableIcon(color: widget.iconColor,),
+//          ExpandableIcon(color: iconColor,),
           ExpandableIcon(),
         ];
         return Row(
           crossAxisAlignment: calculateHeaderCrossAxisAlignment(),
           children:
-              widget.iconPlacement == ExpandablePanelIconPlacement.right ? rowChildren : rowChildren.reversed.toList(),
+              iconPlacement == ExpandablePanelIconPlacement.right ? rowChildren : rowChildren.reversed.toList(),
         );
       }
     }
 
     Widget buildHeader(Widget child) {
-      return widget.tapHeaderToExpand ? ExpandableButton(child: child) : child;
+      return tapHeaderToExpand ? ExpandableButton(child: child) : child;
     }
 
     Widget buildBody(Widget child) {
-      return widget.tapBodyToCollapse ? ExpandableButton(child: child) : child;
+      return tapBodyToCollapse ? ExpandableButton(child: child) : child;
     }
 
     Widget buildWithHeader() {
       return Column(
         children: <Widget>[
-          buildHeaderRow(buildHeader(widget.header)),
-          widget.builder(context, widget.collapsed, buildBody(widget.expanded))
+          buildHeaderRow(buildHeader(header)),
+          builder(context, collapsed, buildBody(expanded))
         ],
       );
     }
 
     Widget buildWithoutHeader() {
-      return buildHeaderRow(widget.builder(context, buildHeader(widget.collapsed), buildBody(widget.expanded)));
+      return buildHeaderRow(builder(context, buildHeader(collapsed), buildBody(expanded)));
     }
 
-    final panel = this.widget.header != null ? buildWithHeader() : buildWithoutHeader();
+    final panel = this.header != null ? buildWithHeader() : buildWithoutHeader();
 
-    if(widget.controller != null) {
+    if(controller != null) {
       return ExpandableNotifier(
-        controller: widget.controller,
+        controller: controller,
         child: panel,
       );
     } else {
@@ -326,7 +320,7 @@ class _ExpandablePanelState extends State<ExpandablePanel> {
   }
 
   CrossAxisAlignment calculateHeaderCrossAxisAlignment() {
-    switch (widget.headerAlignment) {
+    switch (headerAlignment) {
       case ExpandablePanelHeaderAlignment.top:
         return CrossAxisAlignment.start;
       case ExpandablePanelHeaderAlignment.center:
