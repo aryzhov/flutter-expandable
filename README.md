@@ -53,7 +53,6 @@ class Widget2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpandableNotifier(
-      controller: ExpandableController(animationDuration: Duration(milliseconds: 500)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -75,9 +74,9 @@ class Widget2 extends StatelessWidget {
             children: <Widget>[
               Builder(
                 builder: (context) {
-                  var exp = ExpandableController.of(context);
+                  var controller = ExpandableController.of(context);
                   return MaterialButton(
-                    child: Text(exp.expanded ? "COLLAPSE": "EXPAND",
+                    child: Text(controller.expanded ? "COLLAPSE": "EXPAND",
                       style: Theme.of(context).textTheme.button.copyWith(
                         color: Colors.deepPurple
                       ),
