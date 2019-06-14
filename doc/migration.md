@@ -12,6 +12,8 @@ The following breaking API changes have been made in version 3.0:
   If you need to make an`ExpandablePanel` expanded initially, wrap it with an `ExpandableNotifier`
   or pass an `ExpandableController`. 
 
+- The constructor of `ExpandableController` accepts named parameters. Provide
+  the initial value by calling `ExpandableController(initialExpanded: myValue)`.
 
 ## From version 1.x
 

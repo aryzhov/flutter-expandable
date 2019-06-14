@@ -45,7 +45,7 @@ class _ExpandableNotifierState extends State<ExpandableNotifier> {
   void initState() {
     super.initState();
     if(widget.controller == null) {
-      controller = ExpandableController(expanded: widget.initialExpanded ?? false,
+      controller = ExpandableController(initialExpanded: widget.initialExpanded ?? false,
                                            animationDuration: widget.animationDuration);
     }
   }
@@ -80,10 +80,10 @@ class ExpandableController extends ValueNotifier<bool> {
   final Duration animationDuration;
 
   ExpandableController({
-    bool expanded, 
+    bool initialExpanded, 
     Duration animationDuration}) : 
         this.animationDuration = animationDuration ?? const Duration(milliseconds: 300),
-        super(expanded ?? false);
+        super(initialExpanded ?? false);
 
   /// Sets the expanded state.
   set expanded(bool exp) {
@@ -99,7 +99,7 @@ class ExpandableController extends ValueNotifier<bool> {
     final notifier = rebuildOnChange
         ? context.inheritFromWidgetOfExactType(_ExpandableInheritedNotifier)
         : context.ancestorWidgetOfExactType(_ExpandableInheritedNotifier);
-    return (notifier as _ExpandableInheritedNotifier).notifier;
+    return (notifier as _ExpandableInheritedNotifier)?.notifier;
   }
 }
 
