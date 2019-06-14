@@ -29,10 +29,10 @@ class Widget1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpandablePanel(
-      header: Text("Lorem ipsum",
+      header: Text("My Header",
         style: Theme.of(context).textTheme.body2,
       ),
-      expanded: Text(loremIpsum, softWrap: true, ),
+      expanded: Text("Long long text", softWrap: true, ),
       tapHeaderToExpand: true,
       hasIcon: true,
     );
@@ -40,9 +40,10 @@ class Widget1 extends StatelessWidget {
 }
 ```
 
-You can also implement complex expandable widgets by controlling the state of `Expandable` widgets 
-using `ExpandableController`. The controller is provided to `Expandable` widgets by the means
-of `ExpandableNotifier`. The following example demonstrates this usage pattern:
+You can implement complex expandable widgets by controlling the state of `Expandable` widgets 
+using `ExpandableController`. The controller can be provided to `Expandable` widgets explicitly 
+or by the means of `ExpandableNotifier`, which uses `InheritedWidget` under the covers. 
+The following example demonstrates this usage pattern:
 
 ```dart
 /// This widget has three sections: title, pictures, and description, which all expand
@@ -52,7 +53,7 @@ class Widget2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpandableNotifier(
-      controller: ExpandableController(false),
+      controller: ExpandableController(animationDuration: Duration(milliseconds: 500)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -96,14 +97,32 @@ class Widget2 extends StatelessWidget {
 }
 ```
 
-## Migration from version 1.x
+## Automatic Scrolling
 
-When Expandable was initially created, it was using [Scoped Model](https://pub.dartlang.org/packages/scoped_model) plugin
-for communicating state changes. In version 2.0.0 the dependency on `ScopedModel` was eliminated.
+Expandable widgets are often used within a scroll view. When the user expands a widget, be it
+an `ExpandablePanel` or an `Expandable` with a custom control, they expect the expanded
+widget to fit within the viewable area (if possible). For example, if you show a list of 
+articles with a summary of each article, and the user expands an article to read it, they
+expect the expanded article to occupy as much screen space as possible. The **Expandable** 
+package contains a widget to help implement this behavior, `ScrollOnExpand`. 
+Here's how to use it:
 
-This is a breaking change, so a code change is necessary to make the code work. 
-The migration is mainly a search/replace:
+```dart
+   ExpandableNotifier(      // <-- This is where your controller lives
+     //...
+     ScrollOnExpand(        // <-- Wraps the widget to scroll
+      //...
+        ExpandablePanel(    // <-- Your Expandable or ExpandablePanel
+          //...
+        )
+     )
+  )
+```
 
-- `ScopedModel<ExpandableModel>` -> `ExpandableNotifier`
-- `ExpandableModel` -> `ExpandableController`
-- `ScopedModel.of<ExpandableModel>` -> `ExpandableController.of`
+Why a separate widget, you might ask? Because generally you might want to to show not just 
+the expanded widget but its container, for example a `Card` that contains it.
+See the example app for more details on the usage of `ScrollOnExpand`.
+
+## Migration
+
+If you have migration issues from a previous version, read the [Migration Guide](doc/migration.md).

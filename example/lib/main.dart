@@ -37,12 +37,7 @@ class MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Card1(),
           Card2(),
-        ].map((w) {
-          return Padding(
-            padding: EdgeInsets.only(top: 15, left: 15, right: 15,),
-            child: w,
-          );
-        }).toList(),
+        ],
       ),
     );
   }
@@ -54,43 +49,64 @@ class Card1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: ExpandableNotifier(
-        child: Column(
-          children: <Widget>[
-              SizedBox(
-              height: 150.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  shape: BoxShape.rectangle,
-                ),
-              ),
-            ),
-            ExpandablePanel(
-              tapHeaderToExpand: true,
-              headerAlignment: ExpandablePanelHeaderAlignment.center,
-              header: Padding(
-                padding: EdgeInsets.all(10),
-                child: Text("Lorem ipsum",
-                  style: Theme.of(context).textTheme.body2,
-                )
-              ),
-              collapsed: Text(loremIpsum, softWrap: false, overflow: TextOverflow.ellipsis,),
-              expanded: Text(loremIpsum, softWrap: true, overflow: TextOverflow.fade,),
-              builder: (_, collapsed, expanded) {
-                return Padding(
-                  padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
-                  child: Expandable(
-                    collapsed: collapsed,
-                    expanded: expanded,
-                    crossFadePoint: 0,
+    return ExpandableNotifier(
+      child: ScrollOnExpand(
+        scrollOnExpand: false,
+        scrollOnCollapse: true,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              children: <Widget>[
+                  SizedBox(
+                  height: 150,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.orange,
+                      shape: BoxShape.rectangle,
+                    ),
                   ),
-                );
-              },
+                ),
+                ScrollOnExpand(
+                  scrollOnExpand: true,
+                  scrollOnCollapse: false,
+                  child: ExpandablePanel(
+                    tapHeaderToExpand: true,
+                    tapBodyToCollapse: true,
+                    headerAlignment: ExpandablePanelHeaderAlignment.center,
+                    header: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text("ExpandablePanel",
+                        style: Theme.of(context).textTheme.body2,
+                      )
+                    ),
+                    collapsed: Text(loremIpsum, softWrap: false, overflow: TextOverflow.ellipsis,),
+                    expanded: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        for(var i in Iterable.generate(5))
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: Text(loremIpsum, softWrap: true, overflow: TextOverflow.fade,)
+                          ),
+                      ],
+                    ),
+                    builder: (_, collapsed, expanded) {
+                      return Padding(
+                        padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                        child: Expandable(
+                          collapsed: collapsed,
+                          expanded: expanded,
+                          crossFadePoint: 0,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       )
     );
@@ -119,11 +135,11 @@ class Card2 extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text("Lorem Ipsum",
+                Text("Expandable",
                   style: Theme.of(context).textTheme.body1,
                 ),
               ],
@@ -134,7 +150,7 @@ class Card2 extends StatelessWidget {
     }
 
     buildCollapsed2() {
-      return buildImg(Colors.lightGreenAccent, 150.0);
+      return buildImg(Colors.lightGreenAccent, 150);
     }
 
     buildCollapsed3() {
@@ -146,14 +162,14 @@ class Card2 extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text("Lorem Ipsum",
+                Text("Expandable",
                   style: Theme.of(context).textTheme.body1,
                 ),
-                Text("Lorem Ipsum",
+                Text("3 Expandable widgets",
                   style: Theme.of(context).textTheme.caption,
                 ),
               ],
@@ -170,20 +186,20 @@ class Card2 extends StatelessWidget {
           Row(
             children: <Widget>[
               Expanded(
-                child: buildImg(Colors.lightGreenAccent, 100.0)
+                child: buildImg(Colors.lightGreenAccent, 100)
               ),
               Expanded(
-                child: buildImg(Colors.orange, 100.0)
+                child: buildImg(Colors.orange, 100)
               ),
             ],
           ),
           Row(
             children: <Widget>[
               Expanded(
-                child: buildImg(Colors.lightBlue, 100.0)
+                child: buildImg(Colors.lightBlue, 100)
               ),
               Expanded(
-                child: buildImg(Colors.cyan, 100.0)
+                child: buildImg(Colors.cyan, 100)
               ),
             ],
           ),
@@ -193,57 +209,62 @@ class Card2 extends StatelessWidget {
 
     buildExpanded3() {
       return Padding(
-        padding: EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod", softWrap: true,),
+            Text(loremIpsum, softWrap: true,),
           ],
         ),
       );
     }
 
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: ExpandableNotifier(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expandable(
-              collapsed: buildCollapsed1(),
-              expanded: buildExpanded1(),
-            ),
-            Expandable(
-              collapsed: buildCollapsed2(),
-              expanded: buildExpanded2(),
-            ),
-            Expandable(
-              collapsed: buildCollapsed3(),
-              expanded: buildExpanded3(),
-            ),
-            Divider(height: 0.0,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+    return ExpandableNotifier(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+        child: ScrollOnExpand(
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Builder(
-                  builder: (context) {
-                    var exp = ExpandableController.of(context);
-                    return MaterialButton(
-                      child: Text(exp.expanded ? "COLLAPSE": "EXPAND",
-                        style: Theme.of(context).textTheme.button.copyWith(
-                          color: Colors.deepPurple
-                        ),
-                      ),
-                      onPressed: () {
-                        exp.toggle();
+                Expandable(
+                  collapsed: buildCollapsed1(),
+                  expanded: buildExpanded1(),
+                ),
+                Expandable(
+                  collapsed: buildCollapsed2(),
+                  expanded: buildExpanded2(),
+                ),
+                Expandable(
+                  collapsed: buildCollapsed3(),
+                  expanded: buildExpanded3(),
+                ),
+                Divider(height: 1,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Builder(
+                      builder: (context) {
+                        var exp = ExpandableController.of(context);
+                        return MaterialButton(
+                          child: Text(exp.expanded ? "COLLAPSE": "EXPAND",
+                            style: Theme.of(context).textTheme.button.copyWith(
+                              color: Colors.deepPurple
+                            ),
+                          ),
+                          onPressed: () {
+                            exp.toggle();
+                          },
+                        );
                       },
-                    );
-                  },
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       )
     );
