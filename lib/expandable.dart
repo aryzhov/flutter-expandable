@@ -212,6 +212,9 @@ class ExpandablePanel extends StatelessWidget {
   /// If true, the header can be clicked by the user to expand
   final bool tapHeaderToExpand;
 
+  /// If true, the collapsed can be clicked by the user to expand
+  final bool tapCollapsedToExpand;
+
   /// If true, the body can be clicked by the user to collapse
   final bool tapBodyToCollapse;
 
@@ -249,6 +252,7 @@ class ExpandablePanel extends StatelessWidget {
     this.header,
     this.expanded,
     this.tapHeaderToExpand = true,
+    this.tapCollapsedToExpand = false, 
     this.tapBodyToCollapse = false,
     this.hasIcon = true,
     this.iconPlacement = ExpandablePanelIconPlacement.right,
@@ -287,11 +291,15 @@ class ExpandablePanel extends StatelessWidget {
       return tapBodyToCollapse ? ExpandableButton(child: child) : child;
     }
 
+    Widget buildCollapsed(Widget child) {
+      return tapCollapsedToExpand ? ExpandableButton(child: child) : child;
+    }
+
     Widget buildWithHeader() {
       return Column(
         children: <Widget>[
           buildHeaderRow(buildHeader(header)),
-          builder(context, collapsed, buildBody(expanded))
+          builder(context, buildCollapsed(collapsed), buildBody(expanded))
         ],
       );
     }
