@@ -1,3 +1,7 @@
+## [3.0.1]
+
+* Added `iconColor` property to `ExpandablePanel`
+
 ## [3.0.0+1] - 06/14/2019
 
 * Updated README and example app.
