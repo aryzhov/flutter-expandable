@@ -96,7 +96,7 @@ Here's how to use it:
   )
 ```
 
-Why a separate widget, you might ask? Because generally you might want to to show not just 
+Why a separate widget, you might ask? Because generally you might want to show not just 
 the expanded widget but its container, for example a `Card` that contains it.
 See the example app for more details on the usage of `ScrollOnExpand`.
 
