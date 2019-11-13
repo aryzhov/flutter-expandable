@@ -212,6 +212,9 @@ class ExpandablePanel extends StatelessWidget {
   /// If true, the header can be clicked by the user to expand
   final bool tapHeaderToExpand;
 
+  /// If true, the body can be clicked by the user to expand
+  final bool tapBodyToExpand;
+
   /// If true, the body can be clicked by the user to collapse
   final bool tapBodyToCollapse;
 
@@ -229,6 +232,9 @@ class ExpandablePanel extends StatelessWidget {
 
   /// Alignment of the header widget relative to the icon
   final ExpandablePanelHeaderAlignment headerAlignment;
+
+  /// Alignment of the body widget
+  final CrossAxisAlignment bodyAlignment;
 
   /// An optional controller. If not specified, a default controller will be
   /// obtained from a surrounding [ExpandableNotifier]. If that does not exist,
@@ -249,12 +255,14 @@ class ExpandablePanel extends StatelessWidget {
     this.header,
     this.expanded,
     this.tapHeaderToExpand = true,
+    this.tapBodyToExpand = false,
     this.tapBodyToCollapse = false,
     this.hasIcon = true,
     this.iconPlacement = ExpandablePanelIconPlacement.right,
     this.iconColor, // The default color is based on the theme
     this.builder = defaultExpandableBuilder,
     this.headerAlignment = ExpandablePanelHeaderAlignment.top,
+    this.bodyAlignment = CrossAxisAlignment.start,
     this.controller,
   }) : super(key: key);
 
@@ -287,10 +295,12 @@ class ExpandablePanel extends StatelessWidget {
     }
 
     Widget buildWithHeader() {
+      Widget body = (tapBodyToExpand) ? ExpandableButton(child: builder(context, collapsed, buildBody(expanded))) : builder(context, collapsed, buildBody(expanded));
       return Column(
+        crossAxisAlignment: bodyAlignment,
         children: <Widget>[
           buildHeaderRow(buildHeader(header)),
-          builder(context, collapsed, buildBody(expanded))
+          body
         ],
       );
     }
