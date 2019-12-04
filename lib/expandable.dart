@@ -4,14 +4,45 @@ library expandable;
 import 'package:flutter/material.dart';
 
 
+class ExpandableTheme {
+
+  static const ExpandableTheme defaultTheme = ExpandableTheme(
+      iconColor: Colors.grey,
+      useInkWell: true,
+      animationDuration: Duration(milliseconds: 300),
+      crossFadePoint: 0.5,
+      merge: false
+    );
+
+  final Color iconColor;
+  final bool useInkWell;
+  final Duration animationDuration;
+  final bool merge;
+  final double crossFadePoint;
+
+  const ExpandableTheme({
+    this.iconColor,
+    this.useInkWell,
+    this.animationDuration,
+    this.crossFadePoint,
+    this.merge = true,
+  });
+
+  static ExpandableTheme of(BuildContext context) {
+    final notifier = context.findAncestorStateOfType<_ExpandableNotifierState>();
+    return notifier?.theme ?? const ExpandableTheme();
+  }
+
+}
+
 /// Makes an [ExpandableController] available to the widget subtree.
 /// Useful for making multiple [Expandable] widgets synchronized with a single controller.
 class ExpandableNotifier extends StatefulWidget {
 
   final ExpandableController controller;
   final bool initialExpanded;
-  final Duration animationDuration;
   final Widget child;
+  final ExpandableTheme theme;
 
   ExpandableNotifier({
     // An optional key
@@ -23,13 +54,11 @@ class ExpandableNotifier extends StatefulWidget {
     /// Initial expaned state. Must not be used together with [controller].
     this.initialExpanded,
 
-    /// Initial animation duration. Must not be used together with [controller].
-    this.animationDuration,
+    this.theme,
 
     @required
     /// The child can be any widget which contains [Expandable] widgets in its widget tree.
     this.child}): 
-        assert(!(controller != null && animationDuration != null)),
         assert(!(controller != null && initialExpanded != null)),
         super(key: key);
 
@@ -40,13 +69,16 @@ class ExpandableNotifier extends StatefulWidget {
 class _ExpandableNotifierState extends State<ExpandableNotifier> {
 
   ExpandableController controller;
+  ExpandableTheme theme;
 
   @override
   void initState() {
     super.initState();
     if(widget.controller == null) {
-      controller = ExpandableController(initialExpanded: widget.initialExpanded ?? false,
-                                           animationDuration: widget.animationDuration);
+      controller = ExpandableController(initialExpanded: widget.initialExpanded ?? false);
+    }
+    if(widget.theme == null) {
+      theme = ExpandableTheme.of(context);
     }
   }
   
@@ -56,19 +88,16 @@ class _ExpandableNotifierState extends State<ExpandableNotifier> {
   }
 }
 
-
 /// Makes an [ExpandableController] available to the widget subtree.
 /// Useful for making multiple [Expandable] widgets synchronized with a single controller.
 class _ExpandableInheritedNotifier extends InheritedNotifier<ExpandableController> {
   _ExpandableInheritedNotifier(
       {
       @required
-        /// If the controller is not provided, it's created with the initial state of collapsed.
       ExpandableController controller,
-      @required
 
-          /// The child can be any widget which contains [Expandable] widgets in its widget tree.
-          Widget child})
+      @required
+        Widget child})
       : super(notifier: controller, child: child);
 }
 
@@ -77,12 +106,10 @@ class _ExpandableInheritedNotifier extends InheritedNotifier<ExpandableControlle
 class ExpandableController extends ValueNotifier<bool> {
   /// Returns [true] if the state is expanded, [false] if collapsed.
   bool get expanded => value;
-  final Duration animationDuration;
 
   ExpandableController({
     bool initialExpanded, 
     Duration animationDuration}) : 
-        this.animationDuration = animationDuration ?? const Duration(milliseconds: 300),
         super(initialExpanded ?? false);
 
   /// Sets the expanded state.
@@ -97,9 +124,9 @@ class ExpandableController extends ValueNotifier<bool> {
 
   static ExpandableController of(BuildContext context, {bool rebuildOnChange = true}) {
     final notifier = rebuildOnChange
-        ? context.inheritFromWidgetOfExactType(_ExpandableInheritedNotifier)
-        : context.ancestorWidgetOfExactType(_ExpandableInheritedNotifier);
-    return (notifier as _ExpandableInheritedNotifier)?.notifier;
+        ? context.dependOnInheritedWidgetOfExactType<_ExpandableInheritedNotifier>()
+        : context.findAncestorWidgetOfExactType<_ExpandableInheritedNotifier>();
+    return notifier?.notifier;
   }
 }
 
@@ -153,6 +180,8 @@ class Expandable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = this.controller ?? ExpandableController.of(context);
+    final theme = ExpandableTheme.of(context);
+
     // ignore: deprecated_member_use_from_same_package
     final double collapsedFadeStart = crossFadePoint < 0.5 ? 0 : (crossFadePoint * 2 - 1);
     // ignore: deprecated_member_use_from_same_package
@@ -170,7 +199,7 @@ class Expandable extends StatelessWidget {
       secondCurve: Interval(expandedFadeStart, expandedFadeEnd, curve: fadeCurve),
       sizeCurve: sizeCurve,
       crossFadeState: controller.expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-      duration: controller.animationDuration,
+      duration: theme.animationDuration,
     );
   }
 }
@@ -405,12 +434,14 @@ class _ScrollOnExpandState extends State<ScrollOnExpand> {
   ExpandableController _controller;
   int _isAnimating = 0;
   BuildContext _lastContext;
+  ExpandableTheme _theme;
 
   @override
   void initState() {
     super.initState();
     _controller = ExpandableController.of(context, rebuildOnChange: false);
     _controller.addListener(_expandedStateChanged);
+    _theme = ExpandableTheme.of(context);
   }
 
   @override
@@ -422,6 +453,7 @@ class _ScrollOnExpandState extends State<ScrollOnExpand> {
       _controller = newController;
       _controller.addListener(_expandedStateChanged);
     }
+    _theme = ExpandableTheme.of(context);
   }
 
   @override
@@ -442,7 +474,7 @@ class _ScrollOnExpandState extends State<ScrollOnExpand> {
 
   _expandedStateChanged() {
     _isAnimating++;
-      Future.delayed(_controller.animationDuration + Duration(milliseconds: 10), _animationComplete);
+      Future.delayed(_theme.animationDuration + Duration(milliseconds: 10), _animationComplete);
   }
 
   @override
