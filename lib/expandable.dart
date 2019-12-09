@@ -6,31 +6,70 @@ import 'package:flutter/material.dart';
 
 class ExpandableTheme {
 
-  static const ExpandableTheme defaultTheme = ExpandableTheme(
-      iconColor: Colors.grey,
-      useInkWell: true,
-      animationDuration: Duration(milliseconds: 300),
-      crossFadePoint: 0.5,
-      merge: false
-    );
+  static final ExpandableTheme defaults = ExpandableTheme();
 
+  // Expand icon color
   final Color iconColor;
+
   final bool useInkWell;
+
   final Duration animationDuration;
-  final bool merge;
+  /// The point in the cross-fade animation timeline (from 0 to 1)
+  /// where the [collapsed] and [expanded] widgets are half-visible.
+  ///
+  /// If set to 0, the [expanded] widget will be shown immediately in full opacity
+  /// when the size transition starts. This is useful if the collapsed widget is
+  /// empty or if dealing with text that is shown partially in the collapsed state.
+  /// This is the default value.
+  ///
+  /// If set to 0.5, the [expanded] and the [collapsed] widget will be shown
+  /// at half of their opacity in the middle of the size animation with a
+  /// cross-fade effect throughout the entire size transition.
+  ///
+  /// If set to 1, the [expanded] widget will be shown at the very end of the size animation.
+  ///
+  /// When collapsing, the effect of this setting is reversed. For example, if the value is 0
+  /// then the [expanded] widget will remain to be shown until the end of the size animation.
   final double crossFadePoint;
 
-  const ExpandableTheme({
-    this.iconColor,
-    this.useInkWell,
-    this.animationDuration,
-    this.crossFadePoint,
-    this.merge = true,
-  });
+  /// The alignment of [expanded] and [collapsed] widgets during animation
+  final AlignmentGeometry alignment;
 
-  static ExpandableTheme of(BuildContext context) {
-    final notifier = context.findAncestorStateOfType<_ExpandableNotifierState>();
-    return notifier?.theme ?? const ExpandableTheme();
+  final Curve fadeCurve;
+  final Curve sizeCurve;
+
+  final ExpandablePanelHeaderAlignment headerAlignment;
+
+  /// Expand icon placement
+  final ExpandablePanelIconPlacement iconPlacement;
+
+  ExpandableTheme({
+    Color iconColor,
+    bool useInkWell,
+    Duration animationDuration,
+    double crossFadePoint,
+    ExpandableTheme defaults,
+    Curve fadeCurve,
+    Curve sizeCurve,
+    AlignmentGeometry alignment,
+    ExpandablePanelHeaderAlignment headerAlignment,
+    ExpandablePanelIconPlacement iconPlacement,
+  }): 
+    this.iconColor = iconColor ?? defaults?.iconColor ?? Colors.grey,
+    this.useInkWell = useInkWell ?? defaults?.useInkWell ?? true,
+    this.animationDuration = animationDuration ?? defaults?.animationDuration ?? const Duration(milliseconds: 300),
+    this.crossFadePoint = crossFadePoint ?? defaults?.crossFadePoint ?? 0,
+    this.fadeCurve = Curves.linear,
+    this.sizeCurve = Curves.fastOutSlowIn,
+    this.alignment = Alignment.topLeft,
+    this.headerAlignment = ExpandablePanelHeaderAlignment.top,
+    this.iconPlacement = ExpandablePanelIconPlacement.right;
+
+  static ExpandableTheme of(BuildContext context, {bool rebuildOnChange = true}) {
+    final notifier = rebuildOnChange
+        ? context.dependOnInheritedWidgetOfExactType<_ExpandableThemeNotifier>()
+        : context.findAncestorWidgetOfExactType<_ExpandableThemeNotifier>();
+    return notifier?.theme;
   }
 
 }
@@ -75,23 +114,40 @@ class _ExpandableNotifierState extends State<ExpandableNotifier> {
   void initState() {
     super.initState();
     if(widget.controller == null) {
-      controller = ExpandableController(initialExpanded: widget.initialExpanded ?? false);
+      controller = widget.controller ?? ExpandableController(initialExpanded: widget.initialExpanded ?? false);
     }
     if(widget.theme == null) {
-      theme = ExpandableTheme.of(context);
+      final theme0 = ExpandableTheme.of(context, rebuildOnChange: false);
+      theme = theme0 == null ? ExpandableTheme.defaults: null;
     }
   }
-  
+
+  @override
+  void didUpdateWidget(ExpandableNotifier oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(widget.controller != oldWidget.controller && widget.controller != null) {
+      setState(() {
+        controller = widget.controller;
+      });
+    }
+    if(widget.theme != theme && widget.theme != null) {
+      setState((){
+        theme = widget.theme;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return _ExpandableInheritedNotifier(controller: controller ?? widget.controller, child: widget.child);
+    final cn = _ExpandableControllerNotifier(controller: controller, child: widget.child);
+    return theme != null ? _ExpandableThemeNotifier(theme: theme, child: cn): cn;
   }
 }
 
 /// Makes an [ExpandableController] available to the widget subtree.
 /// Useful for making multiple [Expandable] widgets synchronized with a single controller.
-class _ExpandableInheritedNotifier extends InheritedNotifier<ExpandableController> {
-  _ExpandableInheritedNotifier(
+class _ExpandableControllerNotifier extends InheritedNotifier<ExpandableController> {
+  _ExpandableControllerNotifier(
       {
       @required
       ExpandableController controller,
@@ -101,16 +157,43 @@ class _ExpandableInheritedNotifier extends InheritedNotifier<ExpandableControlle
       : super(notifier: controller, child: child);
 }
 
+/// Makes an [ExpandableController] available to the widget subtree.
+/// Useful for making multiple [Expandable] widgets synchronized with a single controller.
+class _ExpandableThemeNotifier extends InheritedWidget {
+
+  final ExpandableTheme theme;
+
+  _ExpandableThemeNotifier(
+      {
+      @required
+      this.theme,
+
+      @required
+        Widget child})
+      : super(child: child);
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) {
+    throw UnimplementedError();
+  }
+}
+
 /// Controls the state (expanded or collapsed) of one or more [Expandable].
 /// The controller should be provided to [Expandable] via [ExpandableNotifier].
 class ExpandableController extends ValueNotifier<bool> {
   /// Returns [true] if the state is expanded, [false] if collapsed.
   bool get expanded => value;
 
+  final Duration _animationDuration;
+
   ExpandableController({
-    bool initialExpanded, 
-    Duration animationDuration}) : 
+    bool initialExpanded,
+    @deprecated
+    animationDuration}) : this._animationDuration = animationDuration,
         super(initialExpanded ?? false);
+
+  @deprecated
+  get animationDuration => this._animationDuration;
 
   /// Sets the expanded state.
   set expanded(bool exp) {
@@ -124,8 +207,8 @@ class ExpandableController extends ValueNotifier<bool> {
 
   static ExpandableController of(BuildContext context, {bool rebuildOnChange = true}) {
     final notifier = rebuildOnChange
-        ? context.dependOnInheritedWidgetOfExactType<_ExpandableInheritedNotifier>()
-        : context.findAncestorWidgetOfExactType<_ExpandableInheritedNotifier>();
+        ? context.dependOnInheritedWidgetOfExactType<_ExpandableControllerNotifier>()
+        : context.findAncestorWidgetOfExactType<_ExpandableControllerNotifier>();
     return notifier?.notifier;
   }
 }
@@ -151,10 +234,11 @@ class Expandable extends StatelessWidget {
   /// If set to 0, the [expanded] widget will be shown immediately in full opacity
   /// when the size transition starts. This is useful if the collapsed widget is
   /// empty or if dealing with text that is shown partially in the collapsed state.
+  /// This is the default value.
   ///
   /// If set to 0.5, the [expanded] and the [collapsed] widget will be shown
   /// at half of their opacity in the middle of the size animation with a
-  /// cross-fade effect throughout the entire size transition. This is the default value.
+  /// cross-fade effect throughout the entire size transition.
   ///
   /// If set to 1, the [expanded] widget will be shown at the very end of the size animation.
   ///
@@ -170,10 +254,14 @@ class Expandable extends StatelessWidget {
       this.collapsed,
       this.expanded,
       this.controller,
-      this.crossFadePoint = 0.5,
-      this.fadeCurve = Curves.linear,
-      this.sizeCurve = Curves.fastOutSlowIn,
-      this.alignment = Alignment.topLeft})
+      @deprecated
+      this.crossFadePoint,
+      @deprecated
+      this.fadeCurve,
+      @deprecated
+      this.sizeCurve,
+      @deprecated
+      this.alignment})
       :
       super(key: key);
 
@@ -181,6 +269,8 @@ class Expandable extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = this.controller ?? ExpandableController.of(context);
     final theme = ExpandableTheme.of(context);
+
+    final crossFadePoint = this.crossFadePoint ?? theme.crossFadePoint;
 
     // ignore: deprecated_member_use_from_same_package
     final double collapsedFadeStart = crossFadePoint < 0.5 ? 0 : (crossFadePoint * 2 - 1);
@@ -195,11 +285,11 @@ class Expandable extends StatelessWidget {
       alignment: this.alignment,
       firstChild: collapsed ?? Container(),
       secondChild: expanded ?? Container(),
-      firstCurve: Interval(collapsedFadeStart, collapsedFadeEnd, curve: fadeCurve),
-      secondCurve: Interval(expandedFadeStart, expandedFadeEnd, curve: fadeCurve),
-      sizeCurve: sizeCurve,
+      firstCurve: Interval(collapsedFadeStart, collapsedFadeEnd, curve: fadeCurve ?? theme.fadeCurve),
+      secondCurve: Interval(expandedFadeStart, expandedFadeEnd, curve: fadeCurve ?? theme.fadeCurve),
+      sizeCurve: sizeCurve ?? theme.sizeCurve,
       crossFadeState: controller.expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-      duration: theme.animationDuration,
+      duration: controller._animationDuration ?? theme.animationDuration,
     );
   }
 }
