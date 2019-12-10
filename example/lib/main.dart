@@ -33,11 +33,14 @@ class MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text("Expandable Demo"),
       ),
-      body: ListView(
-        children: <Widget>[
-          Card1(),
-          Card2(),
-        ],
+      body: ExpandableTheme(
+        themeData: ExpandableThemeData(iconColor: Colors.blue, useInkWell: false),
+        child: ListView(
+          children: <Widget>[
+            Card1(),
+            Card2(),
+          ],
+        ),
       ),
     );
   }
@@ -74,10 +77,9 @@ class Card1 extends StatelessWidget {
                   child: ExpandableNotifier(
                     initialExpanded: true,
                     child: ExpandablePanel(
-                      iconColor: Colors.blue,
                       tapHeaderToExpand: true,
                       tapBodyToCollapse: true,
-                      headerAlignment: ExpandablePanelHeaderAlignment.center,
+                      theme: ExpandableThemeData(headerAlignment: ExpandablePanelHeaderAlignment.center),
                       header: Padding(
                         padding: EdgeInsets.all(10),
                         child: Text("ExpandablePanel",
@@ -88,7 +90,7 @@ class Card1 extends StatelessWidget {
                       expanded: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          for(var i in Iterable.generate(5))
+                          for(var _ in Iterable.generate(5))
                             Padding(
                               padding: EdgeInsets.only(bottom: 10),
                               child: Text(loremIpsum, softWrap: true, overflow: TextOverflow.fade,)
@@ -101,7 +103,6 @@ class Card1 extends StatelessWidget {
                           child: Expandable(
                             collapsed: collapsed,
                             expanded: expanded,
-                            crossFadePoint: 0,
                           ),
                         );
                       },
