@@ -1,5 +1,21 @@
 ## Migration Guide
 
+## From version 3.x
+
+The following parameters have been deprecated. They have been moved to `ExpandableThemeData`:
+- `ExpandableController.animationDuration`
+- `Expandable.crossFadePoint`,
+- `Expandable.fadeCurve`,
+- `Expandable.sizeCurve`,
+- `Expandable.alignment`,
+- `Expandable.alignment`,
+- `ExpandablePanel.iconPlacement`,
+- `ExpandablePanel.iconColor`,
+- `ExpandablePanel.headerAlignment`,
+- `ExpandableIcon.color`,
+- `ScrollOnExpand.scrollAnimationDuration`,
+
+
 ## From version 2.x
 
 The following breaking API changes have been made in version 3.0:

@@ -100,6 +100,35 @@ Why a separate widget, you might ask? Because generally you might want to show n
 the expanded widget but its container, for example a `Card` that contains it.
 See the example app for more details on the usage of `ScrollOnExpand`.
 
+## Themes
+
+Version 4.0 introduced themes to expandable widgets. Themes greatly simplify visual customization 
+and as well as future extensibility. Each expandable widget can get its theme data directly via 
+the constructor or from the nearest `ExpandableTheme` widget:
+
+```dart
+  ExpandableTheme(
+    data: ExpandableThemeData(
+        iconColor: Colors.red, 
+        animationDuration: const Duration(milliseconds: 500)
+    ),
+      // ...
+      Expandable(  // 500 milliseconds animation duration
+      ),
+
+      // ...
+      ExpandablePanel(  // <-- Blue icon color, 500 milliseconds animation duration
+        theme: ExpandableThemeData(iconColor: Colors.blue),
+  
+      ),
+  )
+```
+`ExpandableTheme` widgets can be nested, in which case inner definitions override outer definitions.
+There is a default theme with fallback values defined in `ExpandableThemeData.defaults`.
+
+Prior to version 4.0, theme parameters were passed to widget constructors directly. These parameters
+are now deprecated and will be removed in the next release. 
+
 ## Migration
 
 If you have migration issues from a previous version, read the [Migration Guide](doc/migration.md).

@@ -29,7 +29,10 @@
 .pub/
 /build/
 
-android/
-ios/
-web/
-test/
+# Android related
+**/android/
+
+# iOS/XCode related
+**/ios/
+
+**/web/
