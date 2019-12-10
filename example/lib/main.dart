@@ -34,7 +34,7 @@ class MyHomePageState extends State<MyHomePage> {
         title: Text("Expandable Demo"),
       ),
       body: ExpandableTheme(
-        themeData: ExpandableThemeData(iconColor: Colors.blue, useInkWell: false),
+        data: ExpandableThemeData(iconColor: Colors.blue, useInkWell: false),
         child: ListView(
           children: <Widget>[
             Card1(),
@@ -103,6 +103,7 @@ class Card1 extends StatelessWidget {
                           child: Expandable(
                             collapsed: collapsed,
                             expanded: expanded,
+                            theme: ExpandableThemeData(crossFadePoint: 0),
                           ),
                         );
                       },

@@ -8,7 +8,8 @@ class ExpandableThemeData {
     iconColor: Colors.black54,
     useInkWell: true,
     animationDuration: const Duration(milliseconds: 300),
-    crossFadePoint: 0,
+    scrollAnimationDuration: const Duration(milliseconds: 300),
+    crossFadePoint: 0.5,
     fadeCurve: Curves.linear,
     sizeCurve: Curves.fastOutSlowIn,
     alignment: Alignment.topLeft,
@@ -18,13 +19,17 @@ class ExpandableThemeData {
 
   static final ExpandableThemeData empty = ExpandableThemeData();
 
-  // Expand icon color
+  // Expand icon color.
   final Color iconColor;
 
-  // If true then InkWell will be used on the header
+  // If true then [InkWell] will be used in the header for a ripple effect.
   final bool useInkWell;
 
+  // The duration of the transition between collapsed and expanded states.
   final Duration animationDuration;
+
+  // The duration of the scroll animation to make the expanded widget visible.
+  final Duration scrollAnimationDuration;
 
   /// The point in the cross-fade animation timeline (from 0 to 1)
   /// where the [collapsed] and [expanded] widgets are half-visible.
@@ -44,12 +49,16 @@ class ExpandableThemeData {
   /// then the [expanded] widget will remain to be shown until the end of the size animation.
   final double crossFadePoint;
 
-  /// The alignment of [expanded] and [collapsed] widgets during animation
+  /// The alignment of widgets during animation between expanded and collapsed states.
   final AlignmentGeometry alignment;
 
+  // Fade animation curve between expanded and collapsed states.
   final Curve fadeCurve;
+
+  // Size animation curve between expanded and collapsed states.
   final Curve sizeCurve;
 
+  // The alignment of the header for `ExpandablePanel`.
   final ExpandablePanelHeaderAlignment headerAlignment;
 
   /// Expand icon placement
@@ -59,6 +68,7 @@ class ExpandableThemeData {
     this.iconColor,
     this.useInkWell,
     this.animationDuration,
+    this.scrollAnimationDuration,
     this.crossFadePoint,
     this.fadeCurve,
     this.sizeCurve,
@@ -79,6 +89,7 @@ class ExpandableThemeData {
         iconColor: theme.iconColor ?? defaults.iconColor,
         useInkWell: theme.useInkWell ?? defaults.useInkWell,
         animationDuration: theme.animationDuration ?? defaults.animationDuration,
+        scrollAnimationDuration: theme.scrollAnimationDuration ?? defaults.scrollAnimationDuration,
         crossFadePoint: theme.crossFadePoint ?? defaults.crossFadePoint,
         fadeCurve: theme.fadeCurve ?? defaults.fadeCurve,
         sizeCurve: theme.sizeCurve ?? defaults.sizeCurve,
@@ -109,6 +120,7 @@ class ExpandableThemeData {
     return this.iconColor == null &&
         this.useInkWell == null &&
         this.animationDuration == null &&
+        this.scrollAnimationDuration == null &&
         this.crossFadePoint == null &&
         this.fadeCurve == null &&
         this.sizeCurve == null &&
@@ -121,6 +133,7 @@ class ExpandableThemeData {
     return this.iconColor != null &&
         this.useInkWell != null &&
         this.animationDuration != null &&
+        this.scrollAnimationDuration != null &&
         this.crossFadePoint != null &&
         this.fadeCurve != null &&
         this.sizeCurve != null &&
@@ -146,16 +159,16 @@ class ExpandableThemeData {
 }
 
 class ExpandableTheme extends StatelessWidget {
-  final ExpandableThemeData themeData;
+  final ExpandableThemeData data;
   final Widget child;
 
-  ExpandableTheme({@required this.themeData, @required this.child});
+  ExpandableTheme({@required this.data, @required this.child});
 
   @override
   Widget build(BuildContext context) {
     _ExpandableThemeNotifier n = context.dependOnInheritedWidgetOfExactType<_ExpandableThemeNotifier>();
     return _ExpandableThemeNotifier(
-      themeData: ExpandableThemeData.combine(themeData, n?.themeData),
+      themeData: ExpandableThemeData.combine(data, n?.themeData),
       child: this.child,
     );
   }
@@ -559,7 +572,7 @@ class ScrollOnExpand extends StatefulWidget {
     ExpandableThemeData theme,
     @deprecated Duration scrollAnimationDuration,
     // ignore: deprecated_member_use_from_same_package
-  })  : _theme = scrollAnimationDuration != null ? ExpandableThemeData(animationDuration: scrollAnimationDuration) : null,
+  })  : _theme = scrollAnimationDuration != null ? ExpandableThemeData(scrollAnimationDuration: scrollAnimationDuration) : null,
         super(key: key);
 
   @override
@@ -600,7 +613,7 @@ class _ScrollOnExpandState extends State<ScrollOnExpand> {
     _isAnimating--;
     if (_isAnimating == 0 && _lastContext != null && mounted) {
       if ((_controller.expanded && widget.scrollOnExpand) || (!_controller.expanded && widget.scrollOnCollapse)) {
-        _lastContext?.findRenderObject()?.showOnScreen(duration: _theme.animationDuration);
+        _lastContext?.findRenderObject()?.showOnScreen(duration: _theme.scrollAnimationDuration);
       }
     }
   }
@@ -608,7 +621,7 @@ class _ScrollOnExpandState extends State<ScrollOnExpand> {
   _expandedStateChanged() {
     if (_theme != null) {
       _isAnimating++;
-      Future.delayed(_theme.animationDuration + Duration(milliseconds: 10), _animationComplete);
+      Future.delayed(_theme.scrollAnimationDuration + Duration(milliseconds: 10), _animationComplete);
     }
   }
 

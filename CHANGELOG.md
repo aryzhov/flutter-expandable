@@ -1,3 +1,8 @@
+## [4.0.0]
+
+* Introduced `ExpandableTheme` and `ExpandableThemeData`. 
+* Deprecated widget-level properties that have been moved to the theme.
+
 ## [3.0.1]
 
 * Added `iconColor` property to `ExpandablePanel`
