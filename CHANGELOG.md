@@ -1,3 +1,7 @@
+## [4.0.1]
+
+* Updated `pubspec.yaml` to require the minimum version of Flutter  1.12.0.
+
 ## [4.0.0]
 
 * Introduced `ExpandableTheme` and `ExpandableThemeData`. 
