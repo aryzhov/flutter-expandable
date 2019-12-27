@@ -467,6 +467,7 @@ class ExpandablePanel extends StatelessWidget {
 
     Widget buildWithHeader() {
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           buildHeaderRow(buildHeader(header)),
           buildExpandable(),
