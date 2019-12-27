@@ -1,3 +1,8 @@
+## [4.0.2]
+
+* Changed the horizontal alignment of the header and the body of `ExpandablePanel` to stretch.
+* Fixed an exception when no controller is specified in `ExpandableNotifier`.
+
 ## [4.0.1]
 
 * Updated `pubspec.yaml` to require the minimum version of Flutter  1.12.0.
