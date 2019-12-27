@@ -209,9 +209,7 @@ class _ExpandableNotifierState extends State<ExpandableNotifier> {
   @override
   void initState() {
     super.initState();
-    if (widget.controller == null) {
-      controller = widget.controller ?? ExpandableController(initialExpanded: widget.initialExpanded ?? false);
-    }
+    controller = widget.controller ?? ExpandableController(initialExpanded: widget.initialExpanded ?? false);
   }
 
   @override
