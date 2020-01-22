@@ -23,6 +23,7 @@ class ExpandableThemeData {
     hasIcon: true,
     iconSize: 24.0,
     iconPadding: const EdgeInsets.all(8.0),
+    iconRotationAngle: -math.pi,
     expandIcon: Icons.expand_more,
     collapseIcon: Icons.expand_more,
   );
@@ -95,6 +96,10 @@ class ExpandableThemeData {
   /// Expand icon padding.
   final EdgeInsets iconPadding;
 
+  /// Icon rotation angle in clockwise radians. For example, specify `math.pi` to rotate the icon by 180 degrees
+  /// clockwise when clicking on the expand button.
+  final double iconRotationAngle;
+
   /// The icon in the collapsed state.
   final IconData expandIcon;
 
@@ -120,6 +125,7 @@ class ExpandableThemeData {
     this.hasIcon,
     this.iconSize,
     this.iconPadding,
+    this.iconRotationAngle,
     this.expandIcon,
     this.collapseIcon,
   });
@@ -155,6 +161,7 @@ class ExpandableThemeData {
         hasIcon: theme.hasIcon ?? defaults.hasIcon,
         iconSize: theme.iconSize ?? defaults.iconSize,
         iconPadding: theme.iconPadding ?? defaults.iconPadding,
+        iconRotationAngle: theme.iconRotationAngle ?? defaults.iconRotationAngle,
         expandIcon: theme.expandIcon ?? defaults.expandIcon,
         collapseIcon: theme.collapseIcon ?? defaults.collapseIcon,
       );
@@ -199,6 +206,7 @@ class ExpandableThemeData {
         this.tapBodyToExpand != null &&
         this.tapBodyToCollapse != null &&
         this.hasIcon != null &&
+        this.iconRotationAngle != null &&
         this.expandIcon != null &&
         this.collapseIcon != null;
   }
@@ -220,6 +228,7 @@ class ExpandableThemeData {
           this.tapBodyToExpand == o.tapBodyToExpand &&
           this.tapBodyToCollapse == o.tapBodyToCollapse &&
           this.hasIcon == o.hasIcon &&
+          this.iconRotationAngle == o.iconRotationAngle &&
           this.expandIcon == o.expandIcon &&
           this.collapseIcon == o.collapseIcon;
     } else {
@@ -758,10 +767,10 @@ class _ExpandableIconState extends State<ExpandableIcon>
           final showSecondIcon = theme.collapseIcon != theme.expandIcon &&
               animationController.value >= 0.5;
           return Transform.rotate(
-            angle: math.pi *
+            angle: theme.iconRotationAngle *
                 (showSecondIcon
-                    ? (1.0 - animationController.value)
-                    : -animationController.value),
+                    ? -(1.0 - animationController.value)
+                    : animationController.value),
             child: Icon(
               showSecondIcon ? theme.collapseIcon : theme.expandIcon,
               color: theme.iconColor,

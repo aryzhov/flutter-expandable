@@ -137,6 +137,7 @@ There are several theme properties that help customize the expand/collapse icon:
 *  `iconColor` - icon color;
 *  `iconPadding` - icon padding;
 *  `iconPlacement` - icon placement in the header;
+*  `iconRotationAngle` - the angle to which to rotate the icon;
 *  `expandIcon` - icon face to use in the collapsed state;
 *  `collapseIcon` - icon face to use in the expanded state.
 

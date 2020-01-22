@@ -1,5 +1,6 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 void main() => runApp(MyApp());
 
@@ -306,11 +307,12 @@ class Card3 extends StatelessWidget {
                     headerAlignment: ExpandablePanelHeaderAlignment.center,
                     tapBodyToExpand: true,
                     tapBodyToCollapse: true,
-                    expandIcon: Icons.add,
-                    collapseIcon: Icons.remove,
+                    expandIcon: Icons.arrow_right,
+                    collapseIcon: Icons.arrow_drop_down,
                     iconPlacement: ExpandablePanelIconPlacement.left,
                     iconColor: Colors.red,
-                    iconSize: 20.0,
+                    iconSize: 28.0,
+                    iconRotationAngle: math.pi / 2,
                     iconPadding: EdgeInsets.all(0)),
                 header: Padding(
                   padding: const EdgeInsets.all(10.0),
