@@ -1,3 +1,7 @@
+## [4.1.1]
+
+* Added `iconRotationAngle` theme property.
+
 ## [4.1.0]
 
 * Added ability to customize the expand icon in the theme.

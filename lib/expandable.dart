@@ -161,7 +161,8 @@ class ExpandableThemeData {
         hasIcon: theme.hasIcon ?? defaults.hasIcon,
         iconSize: theme.iconSize ?? defaults.iconSize,
         iconPadding: theme.iconPadding ?? defaults.iconPadding,
-        iconRotationAngle: theme.iconRotationAngle ?? defaults.iconRotationAngle,
+        iconRotationAngle:
+            theme.iconRotationAngle ?? defaults.iconRotationAngle,
         expandIcon: theme.expandIcon ?? defaults.expandIcon,
         collapseIcon: theme.collapseIcon ?? defaults.collapseIcon,
       );
@@ -237,7 +238,7 @@ class ExpandableThemeData {
   }
 
   int get hashCode {
-    return 0;  // we don't care
+    return 0; // we don't care
   }
 
   static ExpandableThemeData of(BuildContext context,
