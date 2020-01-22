@@ -9,9 +9,12 @@ The following parameters have been deprecated. They have been moved to `Expandab
 - `Expandable.sizeCurve`,
 - `Expandable.alignment`,
 - `Expandable.alignment`,
+- `ExpandablePanel.hasIcon`,
 - `ExpandablePanel.iconPlacement`,
 - `ExpandablePanel.iconColor`,
 - `ExpandablePanel.headerAlignment`,
+- `ExpandablePanel.tapHeaderToExpand`,
+- `ExpandablePanel.tapBodyToCollapse`,
 - `ExpandableIcon.color`,
 - `ScrollOnExpand.scrollAnimationDuration`,
 

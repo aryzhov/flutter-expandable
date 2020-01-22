@@ -1,3 +1,11 @@
+## [4.1.0]
+
+* Added ability to customize the expand icon in the theme.
+* Converted widget properties `tapHeaderToExpand`, `tapBodyToExpand`, `hasIcon` to theme properties.
+* Added `tabBodyToExpand` theme property.
+* Added theme property `bodyAlignment` to specify body alignment.
+* Added a third card to the example app that demonstrates a custom icon.
+
 ## [4.0.2]
 
 * Changed the horizontal alignment of the header and the body of `ExpandablePanel` to stretch.
