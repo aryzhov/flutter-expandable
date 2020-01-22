@@ -227,6 +227,10 @@ class ExpandableThemeData {
     }
   }
 
+  int get hashCode {
+    return 0;  // we don't care
+  }
+
   static ExpandableThemeData of(BuildContext context,
       {bool rebuildOnChange = true}) {
     final notifier = rebuildOnChange
