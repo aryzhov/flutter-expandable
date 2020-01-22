@@ -34,11 +34,13 @@ class MyHomePageState extends State<MyHomePage> {
         title: Text("Expandable Demo"),
       ),
       body: ExpandableTheme(
-        data: ExpandableThemeData(iconColor: Colors.blue, useInkWell: false),
+        data: ExpandableThemeData(iconColor: Colors.blue, useInkWell: true),
         child: ListView(
+          physics: const BouncingScrollPhysics(),
           children: <Widget>[
             Card1(),
             Card2(),
+            Card3(),
           ],
         ),
       ),
@@ -72,9 +74,10 @@ class Card1 extends StatelessWidget {
                 scrollOnExpand: true,
                 scrollOnCollapse: false,
                 child: ExpandablePanel(
-                  tapHeaderToExpand: true,
-                  tapBodyToCollapse: true,
-                  theme: ExpandableThemeData(headerAlignment: ExpandablePanelHeaderAlignment.center),
+                  theme: ExpandableThemeData(
+                    headerAlignment: ExpandablePanelHeaderAlignment.center,
+                    tapBodyToCollapse: true,
+                  ),
                   header: Padding(
                     padding: EdgeInsets.all(10),
                     child: Text("ExpandablePanel",
@@ -269,3 +272,65 @@ class Card2 extends StatelessWidget {
     );
   }
 }
+
+
+class Card3 extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+
+    buildItem(String label) {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Text(label),
+      );
+    }
+
+    buildList(bool expanded) {
+      return Column(
+        children: <Widget>[
+          buildItem("Item1"),
+          buildItem("Item2"),
+          if(expanded)
+            buildItem("Item3"),
+          if(expanded)
+            buildItem("Item4"),
+        ],
+      );
+    }
+
+    return ExpandableNotifier(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: ScrollOnExpand(
+            child: Card(
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                children: <Widget>[
+                  ExpandablePanel(
+                    theme: ExpandableThemeData(
+                        headerAlignment: ExpandablePanelHeaderAlignment.center,
+                        tapBodyToExpand: true,
+                        tapBodyToCollapse: true,
+                        expandIcon: Icons.add,
+                        collapseIcon: Icons.remove,
+                        iconPlacement: ExpandablePanelIconPlacement.left,
+                        iconColor: Colors.red,
+                        iconSize: 20.0,
+                        iconPadding: EdgeInsets.all(0)),
+                    header: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text("Items", style: Theme.of(context).textTheme.body2,),
+                    ),
+                    collapsed: buildList(false),
+                    expanded: buildList(true),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
+    );
+  }
+}
+

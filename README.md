@@ -129,6 +129,21 @@ There is a default theme with fallback values defined in `ExpandableThemeData.de
 Prior to version 4.0, theme parameters were passed to widget constructors directly. These parameters
 are now deprecated and will be removed in the next release. 
 
+## Icon Customization
+
+There are several theme properties that help customize the expand/collapse icon:
+*  `hasIcon` - should the icon be shown in the header of [ExpandablePanel];
+*  `iconSize` - icon size;
+*  `iconColor` - icon color;
+*  `iconPadding` - icon padding;
+*  `iconPlacement` - icon placement in the header;
+*  `expandIcon` - icon face to use in the collapsed state;
+*  `collapseIcon` - icon face to use in the expanded state.
+
+When specifying a custom icon, you have the option to use the same icon for expand/collapse or 
+to use two different icons. If using the same icon, specify the same value for `expandIcon` and `collapseIcon`, and
+that icon will be shown as-is in the collapsed state and upside-down in the expanded state.
+
 ## Migration
 
 If you have migration issues from a previous version, read the [Migration Guide](doc/migration.md).

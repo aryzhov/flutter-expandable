@@ -2,6 +2,7 @@
 library expandable;
 
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 class ExpandableThemeData {
   static final ExpandableThemeData defaults = ExpandableThemeData(
@@ -14,7 +15,16 @@ class ExpandableThemeData {
     sizeCurve: Curves.fastOutSlowIn,
     alignment: Alignment.topLeft,
     headerAlignment: ExpandablePanelHeaderAlignment.top,
+    bodyAlignment: ExpandablePanelBodyAlignment.left,
     iconPlacement: ExpandablePanelIconPlacement.right,
+    tapHeaderToExpand: true,
+    tapBodyToExpand: false,
+    tapBodyToCollapse: false,
+    hasIcon: true,
+    iconSize: 24.0,
+    iconPadding:const EdgeInsets.all(8.0),
+    expandIcon: Icons.expand_more,
+    collapseIcon: Icons.expand_more,
   );
 
   static final ExpandableThemeData empty = ExpandableThemeData();
@@ -61,8 +71,36 @@ class ExpandableThemeData {
   // The alignment of the header for `ExpandablePanel`.
   final ExpandablePanelHeaderAlignment headerAlignment;
 
-  /// Expand icon placement
+  // The alignment of the body for `ExpandablePanel`.
+  final ExpandablePanelBodyAlignment bodyAlignment;
+
+  /// Expand icon placement.
   final ExpandablePanelIconPlacement iconPlacement;
+
+  /// If true, the header of [ExpandablePanel] can be clicked by the user to expand or collapse.
+  final bool tapHeaderToExpand;
+
+  /// If true, the body of [ExpandablePanel] can be clicked by the user to expand.
+  final bool tapBodyToExpand;
+
+  /// If true, the body of [ExpandablePanel] can be clicked by the user to collapse.
+  final bool tapBodyToCollapse;
+
+  /// If true, an icon is shown in the header of [ExpandablePanel].
+  final bool hasIcon;
+
+  /// Expand icon size.
+  final double iconSize;
+
+  /// Expand icon padding.
+  final EdgeInsets iconPadding;
+
+  /// The icon in the collapsed state.
+  final IconData expandIcon;
+
+  /// The icon in the expanded state. If you specify the same icon as `expandIcon`, the `expandIcon` icon will
+  /// be shown upside-down in the expanded state.
+  final IconData collapseIcon;
 
   const ExpandableThemeData({
     this.iconColor,
@@ -74,7 +112,16 @@ class ExpandableThemeData {
     this.sizeCurve,
     this.alignment,
     this.headerAlignment,
+    this.bodyAlignment,
     this.iconPlacement,
+    this.tapHeaderToExpand,
+    this.tapBodyToExpand,
+    this.tapBodyToCollapse,
+    this.hasIcon,
+    this.iconSize,
+    this.iconPadding,
+    this.expandIcon,
+    this.collapseIcon,
   });
 
   static ExpandableThemeData combine(ExpandableThemeData theme, ExpandableThemeData defaults) {
@@ -95,7 +142,16 @@ class ExpandableThemeData {
         sizeCurve: theme.sizeCurve ?? defaults.sizeCurve,
         alignment: theme.alignment ?? defaults.alignment,
         headerAlignment: theme.headerAlignment ?? defaults.headerAlignment,
+        bodyAlignment: theme.bodyAlignment ?? defaults.bodyAlignment,
         iconPlacement: theme.iconPlacement ?? defaults.iconPlacement,
+        tapHeaderToExpand: theme.tapHeaderToExpand ?? defaults.tapHeaderToExpand,
+        tapBodyToExpand: theme.tapBodyToExpand ?? defaults.tapBodyToExpand,
+        tapBodyToCollapse: theme.tapBodyToCollapse ?? defaults.tapBodyToCollapse,
+        hasIcon: theme.hasIcon ?? defaults.hasIcon,
+        iconSize: theme.iconSize ?? defaults.iconSize,
+        iconPadding: theme.iconPadding ?? defaults.iconPadding,
+        expandIcon: theme.expandIcon ?? defaults.expandIcon,
+        collapseIcon: theme.collapseIcon ?? defaults.collapseIcon,
       );
     }
   }
@@ -117,16 +173,7 @@ class ExpandableThemeData {
   }
 
   bool isEmpty() {
-    return this.iconColor == null &&
-        this.useInkWell == null &&
-        this.animationDuration == null &&
-        this.scrollAnimationDuration == null &&
-        this.crossFadePoint == null &&
-        this.fadeCurve == null &&
-        this.sizeCurve == null &&
-        this.alignment == null &&
-        this.headerAlignment == null &&
-        this.iconPlacement == null;
+    return this == empty;
   }
 
   bool isFull() {
@@ -139,7 +186,38 @@ class ExpandableThemeData {
         this.sizeCurve != null &&
         this.alignment != null &&
         this.headerAlignment != null &&
-        this.iconPlacement != null;
+        this.bodyAlignment != null &&
+        this.iconPlacement != null &&
+        this.tapHeaderToExpand != null &&
+        this.tapBodyToExpand != null &&
+        this.tapBodyToCollapse != null &&
+        this.hasIcon != null &&
+        this.expandIcon != null &&
+        this.collapseIcon != null;
+  }
+
+  bool operator == (dynamic o) {
+    if(o is ExpandableThemeData) {
+      return this.iconColor == o.iconColor &&
+          this.useInkWell == o.useInkWell &&
+          this.animationDuration == o.animationDuration &&
+          this.scrollAnimationDuration == o.scrollAnimationDuration &&
+          this.crossFadePoint == o.crossFadePoint &&
+          this.fadeCurve == o.fadeCurve &&
+          this.sizeCurve == o.sizeCurve &&
+          this.alignment == o.alignment &&
+          this.headerAlignment == o.headerAlignment &&
+          this.bodyAlignment == o.bodyAlignment &&
+          this.iconPlacement == o.iconPlacement &&
+          this.tapHeaderToExpand == o.tapHeaderToExpand &&
+          this.tapBodyToExpand == o.tapBodyToExpand &&
+          this.tapBodyToCollapse == o.tapBodyToCollapse &&
+          this.hasIcon == o.hasIcon &&
+          this.expandIcon == o.expandIcon &&
+          this.collapseIcon == o.collapseIcon;
+    } else {
+      return false;
+    }
   }
 
   static ExpandableThemeData of(BuildContext context, {bool rebuildOnChange = true}) {
@@ -356,6 +434,16 @@ enum ExpandablePanelHeaderAlignment {
   bottom,
 }
 
+/// Determines vertical alignment of the body
+enum ExpandablePanelBodyAlignment {
+  /// The body is positioned at the left
+  left,
+  /// The body is positioned in the center
+  center,
+  /// The body is positioned at the right
+  right,
+}
+
 /// A configurable widget for showing user-expandable content with an optional expand button.
 class ExpandablePanel extends StatelessWidget {
   /// If specified, the header is always shown, and the expandable part is shown under the header
@@ -366,15 +454,6 @@ class ExpandablePanel extends StatelessWidget {
 
   /// The widget shown in the expanded state
   final Widget expanded;
-
-  /// If true, the header can be clicked by the user to expand
-  final bool tapHeaderToExpand;
-
-  /// If true, the body can be clicked by the user to collapse
-  final bool tapBodyToCollapse;
-
-  /// If true, Expand icon is shown on the right
-  final bool hasIcon;
 
   /// Builds an Expandable object, optional
   final ExpandableBuilder builder;
@@ -388,15 +467,15 @@ class ExpandablePanel extends StatelessWidget {
 
   ExpandablePanel({
     Key key,
-    this.collapsed,
     this.header,
+    this.collapsed,
     this.expanded,
     this.controller,
-    this.tapHeaderToExpand = true,
-    this.tapBodyToCollapse = false,
-    this.hasIcon = true,
     this.builder,
     // Theme overrides (optional)
+    @deprecated bool tapHeaderToExpand,
+    @deprecated bool tapBodyToCollapse,
+    @deprecated bool hasIcon,
     ExpandableThemeData theme,
     @deprecated ExpandablePanelIconPlacement iconPlacement,
     @deprecated Color iconColor,
@@ -404,82 +483,112 @@ class ExpandablePanel extends StatelessWidget {
 
     // ignore: deprecated_member_use_from_same_package
   })  : _theme = ExpandableThemeData.combine(
-                ExpandableThemeData(iconPlacement: iconPlacement, iconColor: iconColor, headerAlignment: headerAlignment), theme)
-            .nullIfEmpty(),
+                ExpandableThemeData(
+                    iconPlacement: iconPlacement,
+                    iconColor: iconColor,
+                    headerAlignment: headerAlignment,
+                    tapHeaderToExpand: tapHeaderToExpand,
+                    tapBodyToCollapse: tapBodyToCollapse,
+                    hasIcon: hasIcon,
+                ), theme).nullIfEmpty(),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = ExpandableThemeData.withDefaults(_theme, context);
 
-    CrossAxisAlignment calculateHeaderCrossAxisAlignment() {
-      switch (theme.headerAlignment) {
-        case ExpandablePanelHeaderAlignment.top:
-          return CrossAxisAlignment.start;
-        case ExpandablePanelHeaderAlignment.center:
-          return CrossAxisAlignment.center;
-        case ExpandablePanelHeaderAlignment.bottom:
-          return CrossAxisAlignment.end;
-      }
-      assert(false);
-      return null;
-    }
+    Widget buildHeaderRow() {
 
-    Widget buildHeaderRow(Widget child) {
-      if (!hasIcon) {
-        return child;
+      CrossAxisAlignment calculateHeaderCrossAxisAlignment() {
+        switch (theme.headerAlignment) {
+          case ExpandablePanelHeaderAlignment.top:
+            return CrossAxisAlignment.start;
+          case ExpandablePanelHeaderAlignment.center:
+            return CrossAxisAlignment.center;
+          case ExpandablePanelHeaderAlignment.bottom:
+            return CrossAxisAlignment.end;
+        }
+        assert(false);
+        return null;
+      }
+
+      Widget wrapWithExpandableButton({Widget widget, bool wrap}) {
+        return wrap ? ExpandableButton(child: widget): widget;
+      }
+
+      if (!theme.hasIcon) {
+        return wrapWithExpandableButton(widget: header, wrap: theme.tapHeaderToExpand);
       } else {
         final rowChildren = <Widget>[
           Expanded(
-            child: child,
+            child: header,
           ),
           // ignore: deprecated_member_use_from_same_package
-          ExpandableIcon(
-            color: theme.iconColor,
-          ),
+          wrapWithExpandableButton(widget: ExpandableIcon(theme: theme), wrap: !theme.tapHeaderToExpand)
         ];
-        return Row(
-          crossAxisAlignment: calculateHeaderCrossAxisAlignment(),
-          children: theme.iconPlacement == ExpandablePanelIconPlacement.right ? rowChildren : rowChildren.reversed.toList(),
+        return wrapWithExpandableButton(
+          widget: Row(
+            crossAxisAlignment: calculateHeaderCrossAxisAlignment(),
+            children: theme.iconPlacement == ExpandablePanelIconPlacement.right ? rowChildren : rowChildren.reversed.toList(),
+          ),
+          wrap: theme.tapHeaderToExpand
         );
       }
     }
 
-    Widget buildHeader(Widget child) {
-      return tapHeaderToExpand ? ExpandableButton(child: child) : child;
-    }
+    Widget buildBody() {
 
-    Widget buildBody(Widget child) {
-      return tapBodyToCollapse ? ExpandableButton(child: child) : child;
-    }
+      Widget wrapBody(Widget child, bool tap) {
 
-    Widget buildExpandable() {
-      if (builder != null) {
-        return builder(context, collapsed, buildBody(expanded));
-      } else {
+        Alignment calcAlignment() {
+          switch(theme.bodyAlignment) {
+            case ExpandablePanelBodyAlignment.left: return Alignment.topLeft;
+            case ExpandablePanelBodyAlignment.center: return Alignment.topCenter;
+            case ExpandablePanelBodyAlignment.right: return Alignment.topRight;
+            default: assert(false); return null;
+          }
+        }
+
+        final widget = Align(
+          alignment: calcAlignment(),
+          child: child,
+        );
+
+        if (!tap) {
+          return widget;
+        }
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          child: widget,
+          onTap: () {
+            final controller = ExpandableController.of(context);
+            controller?.toggle();
+          },
+        );
+      }
+
+      final builder = this.builder ?? (context, collapsed, expanded) {
         return Expandable(
           collapsed: collapsed,
-          expanded: buildBody(expanded),
+          expanded: expanded,
           theme: theme,
         );
-      }
+      };
+
+      return builder(context, wrapBody(collapsed, theme.tapBodyToExpand), wrapBody(expanded, theme.tapBodyToCollapse));
     }
 
     Widget buildWithHeader() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          buildHeaderRow(buildHeader(header)),
-          buildExpandable(),
+          buildHeaderRow(),
+          buildBody(),
         ],
       );
     }
 
-    Widget buildWithoutHeader() {
-      return buildHeaderRow(buildExpandable());
-    }
-
-    final panel = this.header != null ? buildWithHeader() : buildWithoutHeader();
+    final panel = this.header != null ? buildWithHeader() : buildBody();
 
     if (controller != null) {
       return ExpandableNotifier(
@@ -501,7 +610,7 @@ class ExpandablePanel extends StatelessWidget {
 
 /// An down/up arrow icon that toggles the state of [ExpandableController] when the user clicks on it.
 /// The model is accessed via [ScopedModelDescendant].
-class ExpandableIcon extends StatelessWidget {
+class ExpandableIcon extends StatefulWidget {
   final ExpandableThemeData _theme;
 
   ExpandableIcon({
@@ -510,25 +619,104 @@ class ExpandableIcon extends StatelessWidget {
     // ignore: deprecated_member_use_from_same_package
   }) : _theme = ExpandableThemeData.combine(color != null ? ExpandableThemeData(iconColor: color) : null, theme).nullIfEmpty();
 
+
+  @override
+  _ExpandableIconState createState() => _ExpandableIconState();
+}
+
+class _ExpandableIconState extends State<ExpandableIcon> with SingleTickerProviderStateMixin {
+  AnimationController animationController;
+  Animation<double> animation;
+  ExpandableThemeData theme;
+  ExpandableController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final theme = ExpandableThemeData.withDefaults(widget._theme, context, rebuildOnChange: false);
+    animationController = AnimationController(duration: theme.animationDuration, vsync: this);
+    animation = animationController.drive(Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: theme.sizeCurve)));
+    controller = ExpandableController.of(context, rebuildOnChange: false);
+    controller.addListener(_expandedStateChanged);
+    if(controller.expanded) {
+      animationController.value = 1.0;
+    }
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(ExpandableIcon oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(widget._theme != oldWidget._theme) {
+      theme = null;
+    }
+  }
+
+  _expandedStateChanged() {
+    if(controller.expanded &&
+        const [AnimationStatus.dismissed, AnimationStatus.reverse].contains(animationController.status) ) {
+      animationController.forward();
+    } else if (!controller.expanded &&
+        const [AnimationStatus.completed, AnimationStatus.forward].contains(animationController.status)) {
+      animationController.reverse();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final controller2 = ExpandableController.of(context, rebuildOnChange: false);
+    if(controller2 != controller) {
+      controller?.removeListener(_expandedStateChanged);
+      controller = controller2;
+      controller.addListener(_expandedStateChanged);
+      if(controller.expanded) {
+        animationController.value = 1.0;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final controller = ExpandableController.of(context);
-    final theme = ExpandableThemeData.withDefaults(_theme, context);
-    return ExpandIcon(
-      color: theme.iconColor,
-      isExpanded: controller.expanded,
-      onPressed: (exp) {
-        controller.toggle();
-      },
+
+    if(theme == null) {
+      theme = ExpandableThemeData.withDefaults(widget._theme, context);
+    }
+
+    return Padding(
+      padding: theme.iconPadding,
+      child: AnimatedBuilder(
+        animation: animation,
+        builder: (context, child) {
+          final showSecondIcon = theme.collapseIcon != theme.expandIcon && animationController.value >= 0.5;
+          return Transform.rotate(
+            angle: math.pi * (showSecondIcon ? (1.0 - animationController.value): -animationController.value),
+            child: Icon(
+              showSecondIcon ? theme.collapseIcon: theme.expandIcon,
+              color: theme.iconColor,
+              size: theme.iconSize,
+          ),
+        );
+        },
+      ),
     );
   }
 }
+
 
 /// Toggles the state of [ExpandableController] when the user clicks on it.
 class ExpandableButton extends StatelessWidget {
   final Widget child;
 
-  ExpandableButton({this.child});
+  ExpandableButton({
+    @required
+    this.child
+  });
 
   @override
   Widget build(BuildContext context) {
