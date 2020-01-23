@@ -32,7 +32,8 @@ class MyHomePageState extends State<MyHomePage> {
         title: Text("Expandable Demo"),
       ),
       body: ExpandableTheme(
-        data: ExpandableThemeData(iconColor: Colors.blue, useInkWell: true),
+        data:
+            const ExpandableThemeData(iconColor: Colors.blue, useInkWell: true),
         child: ListView(
           physics: const BouncingScrollPhysics(),
           children: <Widget>[
@@ -72,7 +73,7 @@ class Card1 extends StatelessWidget {
               scrollOnExpand: true,
               scrollOnCollapse: false,
               child: ExpandablePanel(
-                theme: ExpandableThemeData(
+                theme: const ExpandableThemeData(
                   headerAlignment: ExpandablePanelHeaderAlignment.center,
                   tapBodyToCollapse: true,
                 ),
@@ -107,7 +108,7 @@ class Card1 extends StatelessWidget {
                     child: Expandable(
                       collapsed: collapsed,
                       expanded: expanded,
-                      theme: ExpandableThemeData(crossFadePoint: 0),
+                      theme: const ExpandableThemeData(crossFadePoint: 0),
                     ),
                   );
                 },
@@ -283,13 +284,10 @@ class Card3 extends StatelessWidget {
       );
     }
 
-    buildList(bool expanded) {
+    buildList() {
       return Column(
         children: <Widget>[
-          buildItem("Item1"),
-          buildItem("Item2"),
-          if (expanded) buildItem("Item3"),
-          if (expanded) buildItem("Item4"),
+          for (var i in [1, 2, 3, 4]) buildItem("Item ${i}"),
         ],
       );
     }
@@ -303,26 +301,43 @@ class Card3 extends StatelessWidget {
           child: Column(
             children: <Widget>[
               ExpandablePanel(
-                theme: ExpandableThemeData(
-                    headerAlignment: ExpandablePanelHeaderAlignment.center,
-                    tapBodyToExpand: true,
-                    tapBodyToCollapse: true,
-                    expandIcon: Icons.arrow_right,
-                    collapseIcon: Icons.arrow_drop_down,
-                    iconPlacement: ExpandablePanelIconPlacement.left,
-                    iconColor: Colors.red,
-                    iconSize: 28.0,
-                    iconRotationAngle: math.pi / 2,
-                    iconPadding: EdgeInsets.all(0)),
-                header: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    "Items",
-                    style: Theme.of(context).textTheme.body2,
+                theme: const ExpandableThemeData(
+                  headerAlignment: ExpandablePanelHeaderAlignment.center,
+                  tapBodyToExpand: true,
+                  tapBodyToCollapse: true,
+                  hasIcon: false,
+                ),
+                header: Container(
+                  color: Colors.indigoAccent,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        ExpandableIcon(
+                          theme: const ExpandableThemeData(
+                            expandIcon: Icons.arrow_right,
+                            collapseIcon: Icons.arrow_drop_down,
+                            iconColor: Colors.white,
+                            iconSize: 28.0,
+                            iconRotationAngle: math.pi / 2,
+                            iconPadding: EdgeInsets.only(right: 5),
+                            hasIcon: false,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            "Items",
+                            style: Theme.of(context)
+                                .textTheme
+                                .body2
+                                .copyWith(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                collapsed: buildList(false),
-                expanded: buildList(true),
+                expanded: buildList(),
               ),
             ],
           ),
