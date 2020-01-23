@@ -213,7 +213,9 @@ class ExpandableThemeData {
   }
 
   bool operator ==(dynamic o) {
-    if (o is ExpandableThemeData) {
+    if (identical(this, o)) {
+      return true;
+    } else if (o is ExpandableThemeData) {
       return this.iconColor == o.iconColor &&
           this.useInkWell == o.useInkWell &&
           this.animationDuration == o.animationDuration &&
