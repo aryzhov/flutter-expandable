@@ -1,3 +1,8 @@
+## [4.1.2]
+
+* Optimized comparison operator in `ExpandableThemeData`.
+* Improved example app.
+
 ## [4.1.1]
 
 * Added `iconRotationAngle` theme property.
