@@ -717,6 +717,7 @@ class _ExpandableIconState extends State<ExpandableIcon>
 
   @override
   void dispose() {
+    controller.removeListener(_expandedStateChanged);
     animationController.dispose();
     super.dispose();
   }
