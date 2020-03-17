@@ -37,6 +37,9 @@ class ExpandableThemeData {
   // If true then [InkWell] will be used in the header for a ripple effect.
   final bool useInkWell;
 
+  // if true move header under the collapsed text
+  final bool under;
+  
   // The duration of the transition between collapsed and expanded states.
   final Duration animationDuration;
 
@@ -111,6 +114,7 @@ class ExpandableThemeData {
   const ExpandableThemeData({
     this.iconColor,
     this.useInkWell,
+    this.under,
     this.animationDuration,
     this.scrollAnimationDuration,
     this.crossFadePoint,
