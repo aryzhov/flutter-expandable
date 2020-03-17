@@ -8,6 +8,7 @@ class ExpandableThemeData {
   static final ExpandableThemeData defaults = ExpandableThemeData(
     iconColor: Colors.black54,
     useInkWell: true,
+    under: false,
     animationDuration: const Duration(milliseconds: 300),
     scrollAnimationDuration: const Duration(milliseconds: 300),
     crossFadePoint: 0.5,
@@ -644,12 +645,20 @@ class ExpandablePanel extends StatelessWidget {
     }
 
     Widget buildWithHeader() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
+      List<Widget> list;
+      if(theme.under == true)
+        list = <Widget>[
           buildHeaderRow(),
           buildBody(),
-        ],
+        ];
+      else
+        list = <Widget>[
+          buildBody(),
+          buildHeaderRow(),
+        ];
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: list,
       );
     }
 
