@@ -39,7 +39,7 @@ class ExpandableThemeData {
 
   // if true move header under the collapsed text
   final bool under;
-  
+
   // The duration of the transition between collapsed and expanded states.
   final Duration animationDuration;
 
@@ -147,6 +147,7 @@ class ExpandableThemeData {
       return ExpandableThemeData(
         iconColor: theme.iconColor ?? defaults.iconColor,
         useInkWell: theme.useInkWell ?? defaults.useInkWell,
+        under: theme.under ?? defaults.under,
         animationDuration:
             theme.animationDuration ?? defaults.animationDuration,
         scrollAnimationDuration:
@@ -199,6 +200,7 @@ class ExpandableThemeData {
   bool isFull() {
     return this.iconColor != null &&
         this.useInkWell != null &&
+        this.under != null &&
         this.animationDuration != null &&
         this.scrollAnimationDuration != null &&
         this.crossFadePoint != null &&
@@ -236,6 +238,7 @@ class ExpandableThemeData {
           this.tapBodyToExpand == o.tapBodyToExpand &&
           this.tapBodyToCollapse == o.tapBodyToCollapse &&
           this.hasIcon == o.hasIcon &&
+          this.under == o.under &&
           this.iconRotationAngle == o.iconRotationAngle &&
           this.expandIcon == o.expandIcon &&
           this.collapseIcon == o.collapseIcon;
@@ -535,6 +538,7 @@ class ExpandablePanel extends StatelessWidget {
     @deprecated bool tapHeaderToExpand,
     @deprecated bool tapBodyToCollapse,
     @deprecated bool hasIcon,
+    @deprecated bool under,
     ExpandableThemeData theme,
     @deprecated ExpandablePanelIconPlacement iconPlacement,
     @deprecated Color iconColor,
@@ -549,6 +553,7 @@ class ExpandablePanel extends StatelessWidget {
                   tapHeaderToExpand: tapHeaderToExpand,
                   tapBodyToCollapse: tapBodyToCollapse,
                   hasIcon: hasIcon,
+                  under: under,
                 ),
                 theme)
             .nullIfEmpty(),
@@ -589,15 +594,20 @@ class ExpandablePanel extends StatelessWidget {
               widget: ExpandableIcon(theme: theme),
               wrap: !theme.tapHeaderToExpand)
         ];
+        Widget mywidget = Row(
+          crossAxisAlignment: calculateHeaderCrossAxisAlignment(),
+          children: theme.iconPlacement == ExpandablePanelIconPlacement.right
+              ? rowChildren
+              : rowChildren.reversed.toList(),
+        );
+        print({'UNDER', theme.under});
+        if (theme.under == true) {
+          mywidget = Center(
+            child: ExpandableIcon(theme: theme),
+          );
+        }
         return wrapWithExpandableButton(
-            widget: Row(
-              crossAxisAlignment: calculateHeaderCrossAxisAlignment(),
-              children:
-                  theme.iconPlacement == ExpandablePanelIconPlacement.right
-                      ? rowChildren
-                      : rowChildren.reversed.toList(),
-            ),
-            wrap: theme.tapHeaderToExpand);
+            widget: mywidget, wrap: theme.tapHeaderToExpand);
       }
     }
 
@@ -650,16 +660,17 @@ class ExpandablePanel extends StatelessWidget {
 
     Widget buildWithHeader() {
       List<Widget> list;
-      if(theme.under == true)
+      if (theme.under == false) {
         list = <Widget>[
           buildHeaderRow(),
           buildBody(),
         ];
-      else
+      } else {
         list = <Widget>[
           buildBody(),
           buildHeaderRow(),
         ];
+      }
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: list,
