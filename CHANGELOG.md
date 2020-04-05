@@ -1,3 +1,7 @@
+# [4.1.3]
+
+* Fixed a bug: Expandables should be unregistered in controller upon their disposal.
+
 ## [4.1.2]
 
 * Optimized comparison operator in `ExpandableThemeData`.
