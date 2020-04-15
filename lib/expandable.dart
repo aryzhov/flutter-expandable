@@ -600,7 +600,7 @@ class ExpandablePanel extends StatelessWidget {
               ? rowChildren
               : rowChildren.reversed.toList(),
         );
-        print({'UNDER', theme.under});
+
         if (theme.under == true) {
           mywidget = Center(
             child: ExpandableIcon(theme: theme),
@@ -639,8 +639,8 @@ class ExpandablePanel extends StatelessWidget {
           behavior: HitTestBehavior.translucent,
           child: widget,
           onTap: () {
-            final controller = ExpandableController.of(context);
-            controller?.toggle();
+            // final controller = ExpandableController.of(context);
+            controller.toggle();
           },
         );
       }
