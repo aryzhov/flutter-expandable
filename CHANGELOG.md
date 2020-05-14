@@ -1,3 +1,7 @@
+# [4.1.4]
+
+* Added `inkWellRadius` theme property.
+
 # [4.1.3]
 
 * Fixed a bug: Expandables should be unregistered in controller upon their disposal.

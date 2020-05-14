@@ -33,7 +33,10 @@ class MyHomePageState extends State<MyHomePage> {
       ),
       body: ExpandableTheme(
         data:
-            const ExpandableThemeData(iconColor: Colors.blue, useInkWell: true),
+            const ExpandableThemeData(
+                iconColor: Colors.blue,
+                useInkWell: true,
+            ),
         child: ListView(
           physics: const BouncingScrollPhysics(),
           children: <Widget>[
