@@ -8,6 +8,7 @@ class ExpandableThemeData {
   static final ExpandableThemeData defaults = ExpandableThemeData(
     iconColor: Colors.black54,
     useInkWell: true,
+    inkWellBorderRadius: BorderRadius.zero,
     animationDuration: const Duration(milliseconds: 300),
     scrollAnimationDuration: const Duration(milliseconds: 300),
     crossFadePoint: 0.5,
@@ -107,6 +108,9 @@ class ExpandableThemeData {
   /// be shown upside-down in the expanded state.
   final IconData collapseIcon;
 
+  ///The [BorderRadius] for the [InkWell], if `inkWell` is set to true
+  final BorderRadius inkWellBorderRadius;
+
   const ExpandableThemeData({
     this.iconColor,
     this.useInkWell,
@@ -128,6 +132,7 @@ class ExpandableThemeData {
     this.iconRotationAngle,
     this.expandIcon,
     this.collapseIcon,
+    this.inkWellBorderRadius,
   });
 
   static ExpandableThemeData combine(
@@ -142,6 +147,7 @@ class ExpandableThemeData {
       return ExpandableThemeData(
         iconColor: theme.iconColor ?? defaults.iconColor,
         useInkWell: theme.useInkWell ?? defaults.useInkWell,
+        inkWellBorderRadius: theme.inkWellBorderRadius ?? defaults.inkWellBorderRadius,
         animationDuration:
             theme.animationDuration ?? defaults.animationDuration,
         scrollAnimationDuration:
@@ -194,6 +200,7 @@ class ExpandableThemeData {
   bool isFull() {
     return this.iconColor != null &&
         this.useInkWell != null &&
+        this.inkWellBorderRadius != null &&
         this.animationDuration != null &&
         this.scrollAnimationDuration != null &&
         this.crossFadePoint != null &&
@@ -218,6 +225,7 @@ class ExpandableThemeData {
     } else if (o is ExpandableThemeData) {
       return this.iconColor == o.iconColor &&
           this.useInkWell == o.useInkWell &&
+          this.inkWellBorderRadius == o.inkWellBorderRadius &&
           this.animationDuration == o.animationDuration &&
           this.scrollAnimationDuration == o.scrollAnimationDuration &&
           this.crossFadePoint == o.crossFadePoint &&
@@ -799,7 +807,11 @@ class ExpandableButton extends StatelessWidget {
     final theme = ExpandableThemeData.withDefaults(null, context);
 
     if (theme.useInkWell) {
-      return InkWell(onTap: controller.toggle, child: child);
+      return InkWell(
+        onTap: controller.toggle,
+        child: child,
+        borderRadius: theme.inkWellBorderRadius,
+      );
     } else {
       return GestureDetector(
         onTap: controller.toggle,
