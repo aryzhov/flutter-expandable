@@ -1,3 +1,7 @@
+# [5.0.0]
+
+* Null safety migration.
+
 # [4.1.4]
 
 * Added `inkWellRadius` theme property.

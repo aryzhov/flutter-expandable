@@ -1,1 +1,18 @@
 include: package:pedantic/analysis_options.yaml
+
+analizer:
+  strong-mode:
+    implicit-casts: false
+
+linter:
+  rules:
+    always_specify_types: true
+    always_declare_return_types: true
+    omit_local_variable_types: false
+    prefer_typing_uninitialized_variables: true
+    always_use_package_imports: true
+    avoid_types_as_parameter_names: true
+    annotate_overrides: true
+    empty_constructor_bodies: true
+    lines_longer_than_80_chars: false
+    prefer_if_null_operators: true
