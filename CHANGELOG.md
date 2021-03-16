@@ -1,3 +1,8 @@
+# [5.0.0]
+
+* Migrated to null safety. Dart SDK >= `2.12.0` is now required.
+* Removed previously deprecated attributes.
+
 # [4.1.4]
 
 * Added `inkWellRadius` theme property.
