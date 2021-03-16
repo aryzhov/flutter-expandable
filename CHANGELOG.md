@@ -1,3 +1,7 @@
+# [5.0.1]
+
+* Added `theme` property to `ExpandableButton`.
+
 # [5.0.0]
 
 * Migrated to null safety. Dart SDK >= `2.12.0` is now required.

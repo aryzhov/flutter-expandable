@@ -534,7 +534,9 @@ class ExpandablePanel extends StatelessWidget {
 
       Widget wrapWithExpandableButton(
           {required Widget? widget, required bool wrap}) {
-        return wrap ? ExpandableButton(child: widget) : widget ?? Container();
+        return wrap
+            ? ExpandableButton(child: widget, theme: theme)
+            : widget ?? Container();
       }
 
       if (!theme.hasIcon!) {
@@ -748,13 +750,14 @@ class _ExpandableIconState extends State<ExpandableIcon>
 /// Toggles the state of [ExpandableController] when the user clicks on it.
 class ExpandableButton extends StatelessWidget {
   final Widget? child;
+  final ExpandableThemeData? theme;
 
-  ExpandableButton({this.child});
+  ExpandableButton({this.child, this.theme});
 
   @override
   Widget build(BuildContext context) {
     final controller = ExpandableController.of(context, required: true);
-    final theme = ExpandableThemeData.withDefaults(null, context);
+    final theme = ExpandableThemeData.withDefaults(this.theme, context);
 
     if (theme.useInkWell!) {
       return InkWell(
