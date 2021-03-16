@@ -1,6 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
 void main() => runApp(MyApp());
 
@@ -32,11 +33,10 @@ class MyHomePageState extends State<MyHomePage> {
         title: Text("Expandable Demo"),
       ),
       body: ExpandableTheme(
-        data:
-            const ExpandableThemeData(
-                iconColor: Colors.blue,
-                useInkWell: true,
-            ),
+        data: const ExpandableThemeData(
+          iconColor: Colors.blue,
+          useInkWell: true,
+        ),
         child: ListView(
           physics: const BouncingScrollPhysics(),
           children: <Widget>[
@@ -252,13 +252,14 @@ class Card2 extends StatelessWidget {
                 children: <Widget>[
                   Builder(
                     builder: (context) {
-                      var controller = ExpandableController.of(context);
-                      return FlatButton(
+                      var controller =
+                          ExpandableController.of(context, required: true)!;
+                      return TextButton(
                         child: Text(
                           controller.expanded ? "COLLAPSE" : "EXPAND",
                           style: Theme.of(context)
                               .textTheme
-                              .button
+                              .button!
                               .copyWith(color: Colors.deepPurple),
                         ),
                         onPressed: () {
@@ -332,7 +333,7 @@ class Card3 extends StatelessWidget {
                             "Items",
                             style: Theme.of(context)
                                 .textTheme
-                                .body2
+                                .bodyText1!
                                 .copyWith(color: Colors.white),
                           ),
                         ),
@@ -340,6 +341,7 @@ class Card3 extends StatelessWidget {
                     ),
                   ),
                 ),
+                collapsed: Container(),
                 expanded: buildList(),
               ),
             ],
