@@ -499,6 +499,10 @@ class ExpandablePanel extends StatelessWidget {
   /// Builds an Expandable object, optional
   final ExpandableBuilder? builder;
 
+  /// Callback when [ExpandablePanel] state changes,
+  /// return **true** value on [ExpandablePanel] expanded
+  final Function(bool)? onTap;
+
   /// An optional controller. If not specified, a default controller will be
   /// obtained from a surrounding [ExpandableNotifier]. If that does not exist,
   /// the controller will be created with the initial state of [initialExpanded].
@@ -514,6 +518,7 @@ class ExpandablePanel extends StatelessWidget {
     this.controller,
     this.builder,
     this.theme,
+    this.onTap
   }) : super(key: key);
 
   @override
@@ -535,7 +540,7 @@ class ExpandablePanel extends StatelessWidget {
       Widget wrapWithExpandableButton(
           {required Widget? widget, required bool wrap}) {
         return wrap
-            ? ExpandableButton(child: widget, theme: theme)
+            ? ExpandableButton(child: widget, theme: theme, onTap: onTap)
             : widget ?? Container();
       }
 
@@ -591,6 +596,10 @@ class ExpandablePanel extends StatelessWidget {
           onTap: () {
             final controller = ExpandableController.of(context);
             controller?.toggle();
+
+            if(onTap != null) {
+              onTap!(controller?.expanded ?? false);
+            }
           },
         );
       }
@@ -751,8 +760,9 @@ class _ExpandableIconState extends State<ExpandableIcon>
 class ExpandableButton extends StatelessWidget {
   final Widget? child;
   final ExpandableThemeData? theme;
+  final Function(bool)? onTap;
 
-  ExpandableButton({this.child, this.theme});
+  ExpandableButton({this.child, this.theme, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -761,13 +771,25 @@ class ExpandableButton extends StatelessWidget {
 
     if (theme.useInkWell!) {
       return InkWell(
-        onTap: controller?.toggle,
+        onTap: () {
+          controller?.toggle();
+
+          if(onTap != null) {
+            onTap!(controller?.expanded ?? false);
+          }
+        },
         child: child,
         borderRadius: theme.inkWellBorderRadius!,
       );
     } else {
       return GestureDetector(
-        onTap: controller?.toggle,
+        onTap: () {
+          controller?.toggle();
+          
+          if(onTap != null) {
+            onTap!(controller?.expanded ?? false);
+          } 
+        },
         child: child,
       );
     }
