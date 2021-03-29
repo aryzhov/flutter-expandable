@@ -762,7 +762,7 @@ class ExpandableButton extends StatelessWidget {
   final ExpandableThemeData? theme;
   final Function(bool)? onTap;
 
-  ExpandableButton({this.child, this.theme, @required this.onTap});
+  ExpandableButton({this.child, this.theme, this.onTap});
 
   @override
   Widget build(BuildContext context) {
