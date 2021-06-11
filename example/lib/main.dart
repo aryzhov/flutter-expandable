@@ -34,7 +34,6 @@ class MyHomePageState extends State<MyHomePage> {
       ),
       body: ExpandableTheme(
         data: const ExpandableThemeData(
-          iconColor: Colors.blue,
           useInkWell: true,
         ),
         child: ListView(
@@ -321,7 +320,7 @@ class Card3 extends StatelessWidget {
                           theme: const ExpandableThemeData(
                             expandIcon: Icons.arrow_right,
                             collapseIcon: Icons.arrow_drop_down,
-                            iconColor: Colors.white,
+                            expandedIconColor: Colors.white,
                             iconSize: 28.0,
                             iconRotationAngle: math.pi / 2,
                             iconPadding: EdgeInsets.only(right: 5),
