@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 
 class ExpandableThemeData {
   static final ExpandableThemeData defaults = ExpandableThemeData(
-    iconColor: Colors.black54,
+    expandedIconColor: Colors.black54,
+    collapsedIconColor: Colors.black54,
     useInkWell: true,
     inkWellBorderRadius: BorderRadius.zero,
     animationDuration: const Duration(milliseconds: 300),
@@ -33,7 +34,8 @@ class ExpandableThemeData {
   static final ExpandableThemeData empty = ExpandableThemeData();
 
   // Expand icon color.
-  final Color? iconColor;
+  final Color? expandedIconColor;
+  final Color? collapsedIconColor;
 
   // If true then [InkWell] will be used in the header for a ripple effect.
   final bool? useInkWell;
@@ -113,7 +115,8 @@ class ExpandableThemeData {
   final BorderRadius? inkWellBorderRadius;
 
   const ExpandableThemeData({
-    this.iconColor,
+    this.expandedIconColor,
+    this.collapsedIconColor,
     this.useInkWell,
     this.animationDuration,
     this.scrollAnimationDuration,
@@ -146,7 +149,10 @@ class ExpandableThemeData {
       return theme;
     } else {
       return ExpandableThemeData(
-        iconColor: theme.iconColor ?? defaults.iconColor,
+        expandedIconColor:
+            theme.expandedIconColor ?? defaults.expandedIconColor,
+        collapsedIconColor:
+            theme.collapsedIconColor ?? defaults.collapsedIconColor,
         useInkWell: theme.useInkWell ?? defaults.useInkWell,
         inkWellBorderRadius:
             theme.inkWellBorderRadius ?? defaults.inkWellBorderRadius,
@@ -197,7 +203,8 @@ class ExpandableThemeData {
   }
 
   bool isFull() {
-    return this.iconColor != null &&
+    return this.expandedIconColor != null &&
+        this.collapsedIconColor != null &&
         this.useInkWell != null &&
         this.inkWellBorderRadius != null &&
         this.animationDuration != null &&
@@ -222,7 +229,8 @@ class ExpandableThemeData {
     if (identical(this, o)) {
       return true;
     } else if (o is ExpandableThemeData) {
-      return this.iconColor == o.iconColor &&
+      return this.expandedIconColor == o.expandedIconColor &&
+          this.collapsedIconColor == o.collapsedIconColor &&
           this.useInkWell == o.useInkWell &&
           this.inkWellBorderRadius == o.inkWellBorderRadius &&
           this.animationDuration == o.animationDuration &&
@@ -737,7 +745,7 @@ class _ExpandableIconState extends State<ExpandableIcon>
                     : animationController!.value),
             child: Icon(
               showSecondIcon ? theme.collapseIcon! : theme.expandIcon!,
-              color: theme.iconColor!,
+              color: showSecondIcon? theme.collapsedIconColor! : theme.expandedIconColor!,
               size: theme.iconSize!,
             ),
           );
