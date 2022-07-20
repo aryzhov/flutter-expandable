@@ -407,7 +407,7 @@ class ExpandableController extends ValueNotifier<bool> {
 /// Shows either the expanded or the collapsed child depending on the state.
 /// The state is determined by an instance of [ExpandableController] provided by [ScopedModel]
 class Expandable extends StatelessWidget {
-  /// Whe widget to show when collapsed
+  /// The widget to show when collapsed
   final Widget collapsed;
 
   /// The widget to show when expanded
